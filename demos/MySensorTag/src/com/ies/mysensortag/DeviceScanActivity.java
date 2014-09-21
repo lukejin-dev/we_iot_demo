@@ -1,7 +1,7 @@
 package com.ies.mysensortag;
 
-import com.example.bluetooth.le.iBeaconClass;
-import com.example.bluetooth.le.iBeaconClass.iBeacon;
+import java.lang.reflect.Method;
+
 import com.ies.mysensortag.R;
 
 import android.app.Activity;
@@ -11,17 +11,17 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class MainActivity extends Activity {
+public class DeviceScanActivity extends Activity {
     
-    private final static String TAG_ = MainActivity.class.getSimpleName();
+    private final static String TAG_ = DeviceScanActivity.class.getSimpleName();
     private ToggleButton button_scan_switch_;
     private ToggleButton button_report_server_;
     private BluetoothAdapter ble_adapter_;
@@ -74,7 +74,9 @@ public class MainActivity extends Activity {
         //
         // Start the scan on Resume. 
         //
-        
+        if (button_scan_switch_.isChecked()) {
+            ble_adapter_.startLeScan(scan_callback_);
+        } 
     }
 
     @Override
@@ -86,33 +88,17 @@ public class MainActivity extends Activity {
         //
         // Stop the scan on Pause.
         //
+        ble_adapter_.stopLeScan(scan_callback_);
     }
-    
-    
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-
-        @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-
-            final iBeacon ibeacon = iBeaconClass.fromScanData(device,rssi,scanRecord);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLeDeviceListAdapter.addDevice(ibeacon);
-                    mLeDeviceListAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-    };
-    
+   
     public void onScanToggleClicked(View view) {
         boolean on = button_scan_switch_.isChecked();
         if (on) {
             Log.d(TAG_, "Scan button ON");
+            ble_adapter_.startLeScan(scan_callback_);
         } else {
             Log.d(TAG_, "Scan button OFF");
+            ble_adapter_.stopLeScan(scan_callback_);
         }
     }
 
@@ -124,6 +110,36 @@ public class MainActivity extends Activity {
             Log.d(TAG_, "Report button OFF");
         }
     }
+    
+    // Device scan callback.
+    private BluetoothAdapter.LeScanCallback scan_callback_ =
+            new BluetoothAdapter.LeScanCallback() {
+
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            //BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+            try {
+                Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
+                ParcelUuid[] ids = (ParcelUuid[]) getUuidsMethod.invoke(ble_adapter_, null);
+                for (ParcelUuid id:ids) {
+                    Log.d(TAG_, "id:" + id.toString());
+                }
+            } catch (Exception e) {
+                
+            }
+            Log.d(TAG_, "Get device " + scanRecord + ", RSSI:" + rssi);
+            /**
+            final iBeacon ibeacon = iBeaconClass.fromScanData(device,rssi,scanRecord);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLeDeviceListAdapter.addDevice(ibeacon);
+                    mLeDeviceListAdapter.notifyDataSetChanged();
+                }
+            });
+            **/
+        }
+    };
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
