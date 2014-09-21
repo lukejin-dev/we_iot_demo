@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6.0dip" >
+
+    <TextView
+        android:id="@id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="28.0dip" />
+
+    <TextView
+        android:id="@id/address"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20.0dip" />
+
+</LinearLayout>

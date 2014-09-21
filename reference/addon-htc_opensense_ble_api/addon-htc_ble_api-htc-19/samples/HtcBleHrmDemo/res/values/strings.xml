@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_section3">Demo 3</string>
+    <string name="title_section2">Demo 2</string>
+    <string name="title_section1">HRM Demo</string>
+    <string name="menu_settings">BLE Devices</string>
+    <string name="device_name">Device:  </string>
+    <string name="app_name">HTC BLE Demo</string>
+    <string name="app_description">Heart Rate Monitor</string>
+    <string name="button_test">Start</string>
+    <string name="connect_test">Connect</string>
+    <string name="select_device">Select a Device</string>
+    <string name="scanning">Scanning For Devices&#6230;Please Wait</string>
+    <string name="no_ble_devices">No BLE Devices Found</string>
+    <string name="status_string">Connection Status :  </string>
+    <string name="sensor">Sensor Location :  </string>
+    <string name="reset">Reset</string>
+    <string name="reset_note">Note: Reset button resets Energy Expended</string>
+    <string name="sensor_conn_status">Sensor Contact Status :  </string>
+    <string name="energy_expended">Energy Expended:  </string>
+    <string name="rr_interval">RR Interval:  </string>
+    <string name="body_location">Body Sensor Location:  </string>
+    <string name="bpm">Heart Rate BPM: </string>
+    <string name="logo_description">BLE logo</string>
+    <string name="audio">audio</string>
+    
+</resources>
