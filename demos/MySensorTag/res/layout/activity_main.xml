@@ -8,9 +8,47 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.ies.mysensortag.MainActivity" >
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/device_list"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1" >
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.9" >
+
+            <ToggleButton
+                android:id="@+id/scan_swtich_button"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.5"
+                android:textOn="@string/stop_scan"
+                android:textOff="@string/start_scan"
+                android:onClick="onScanToggleClicked" />
+
+            <ToggleButton
+                android:id="@+id/report_server_button"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textOn="@string/stop_report"
+                android:textOff="@string/start_report"
+                android:layout_weight="0.5"
+                android:onClick="onReportToggleClicked" />
+            
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
