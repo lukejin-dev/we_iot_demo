@@ -26,19 +26,16 @@ public class DeviceScanListAdapter extends BaseAdapter {
     
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return beacon_list_.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return beacon_list_.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -105,6 +102,15 @@ public class DeviceScanListAdapter extends BaseAdapter {
         // Only update the RSSI value for existing beacon device.
         //
         bsi.set_rssi(rssi);
+        notifyDataSetChanged();
+    }
+    
+    public void refresh_disappeared_device() {
+        for (BeaconScanInfo bsi:beacon_list_) {
+            if (bsi.is_expired()) {
+                beacon_list_.remove(bsi);
+            }
+        }
         notifyDataSetChanged();
     }
     

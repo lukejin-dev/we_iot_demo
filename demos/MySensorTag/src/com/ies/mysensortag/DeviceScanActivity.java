@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.Menu;
@@ -24,11 +25,13 @@ import android.widget.ToggleButton;
 public class DeviceScanActivity extends Activity {
     
     private final static String TAG_ = DeviceScanActivity.class.getSimpleName();
+    private final long DISAPPEAR_CHECK_INTERVAL_ = 1000;
     private ToggleButton button_scan_switch_;
     private ToggleButton button_report_server_;
     private BluetoothAdapter ble_adapter_;
     private ListView listview_scan_;
     private DeviceScanListAdapter list_adapter_scan_;
+    private Handler disappear_check_handler_;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,9 @@ public class DeviceScanActivity extends Activity {
             Intent enableBtIntent = 
                     new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
-        }        
+        }
+        
+        disappear_check_handler_ = new Handler();
     }
 
     @Override
@@ -97,6 +102,8 @@ public class DeviceScanActivity extends Activity {
         //
         if (button_scan_switch_.isChecked()) {
             ble_adapter_.startLeScan(scan_callback_);
+            disappear_check_handler_.postDelayed(
+                    disappear_check_runner_, DISAPPEAR_CHECK_INTERVAL_);
         } 
     }
 
@@ -113,11 +120,37 @@ public class DeviceScanActivity extends Activity {
         list_adapter_scan_.clear();
     }
    
+    final Runnable disappear_check_runner_ = new Runnable() {
+        public void run() {
+            if (button_scan_switch_.isChecked()) {
+                list_adapter_scan_.refresh_disappeared_device();
+                disappear_check_handler_.postDelayed(this, DISAPPEAR_CHECK_INTERVAL_);
+            }
+        }
+    };
+    
     public void onScanToggleClicked(View view) {
         boolean on = button_scan_switch_.isChecked();
         if (on) {
             Log.d(TAG_, "Scan button ON");
-            ble_adapter_.startLeScan(scan_callback_);
+            
+            //
+            // Ensures Bluetooth is available on the device and it is enabled. If not,
+            // displays a dialog requesting user permission to enable Bluetooth.
+            //
+            if (ble_adapter_ == null || !ble_adapter_.isEnabled()) {
+                Intent enableBtIntent = 
+                        new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(enableBtIntent);
+            }
+            
+            if (ble_adapter_.isEnabled()) {
+                ble_adapter_.startLeScan(scan_callback_);
+                disappear_check_handler_.postDelayed(
+                        disappear_check_runner_, DISAPPEAR_CHECK_INTERVAL_);
+            } else {
+                button_scan_switch_.setChecked(false);
+            }
         } else {
             Log.d(TAG_, "Scan button OFF");
             ble_adapter_.stopLeScan(scan_callback_);
