@@ -9,5 +9,6 @@
     <string name="stop_scan">Stop Scan</string>
     <string name="start_report">Start Report</string>
     <string name="stop_report">Stop Report</string>
+    <string name="unknown_scan_device">Unknown Device</string>
 
 </resources>

@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ParcelUuid;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -25,26 +27,39 @@ public class DeviceScanActivity extends Activity {
     private ToggleButton button_scan_switch_;
     private ToggleButton button_report_server_;
     private BluetoothAdapter ble_adapter_;
+    private ListView listview_scan_;
+    private DeviceScanListAdapter list_adapter_scan_;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        button_scan_switch_ = (ToggleButton) findViewById(R.id.scan_swtich_button);
-        button_report_server_ = (ToggleButton) findViewById(R.id.report_server_button);
         
         //
-        // Use this check to determine whether BLE is supported on the device.  Then you can
-        // selectively disable BLE-related features.
+        // Prepare UI layout and UI controls.
         //
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+        setContentView(R.layout.device_scan_main);
+        button_scan_switch_ = 
+                (ToggleButton) findViewById(R.id.scan_swtich_button);
+        button_report_server_ = 
+                (ToggleButton) findViewById(R.id.report_server_button);
+        listview_scan_ = (ListView) findViewById(R.id.device_list);
+        list_adapter_scan_ = new DeviceScanListAdapter(this);
+        listview_scan_.setAdapter(list_adapter_scan_);
+        
+        //
+        // Use this check to determine whether BLE is supported on the device.  
+        // Then you can selectively disable BLE-related features.
+        //
+        if (!getPackageManager().
+                hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, R.string.ble_not_supported, 
+                    Toast.LENGTH_SHORT).show();
             finish();
         }
         
         //
-        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-        // BluetoothAdapter through BluetoothManager.
+        // Initializes a Bluetooth adapter.  For API level 18 and above, get 
+        // a reference to BluetoothAdapter through BluetoothManager.
         //
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -54,15 +69,21 @@ public class DeviceScanActivity extends Activity {
         // Checks if Bluetooth is supported on the device.
         //
         if (ble_adapter_ == null) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ble_not_supported, 
+                    Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
         
         //
-        // Enable bluetooth
+        // Ensures Bluetooth is available on the device and it is enabled. If not,
+        // displays a dialog requesting user permission to enable Bluetooth.
         //
-        ble_adapter_.enable();
+        if (ble_adapter_ == null || !ble_adapter_.isEnabled()) {
+            Intent enableBtIntent = 
+                    new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBtIntent);
+        }        
     }
 
     @Override
@@ -89,6 +110,7 @@ public class DeviceScanActivity extends Activity {
         // Stop the scan on Pause.
         //
         ble_adapter_.stopLeScan(scan_callback_);
+        list_adapter_scan_.clear();
     }
    
     public void onScanToggleClicked(View view) {
@@ -99,6 +121,7 @@ public class DeviceScanActivity extends Activity {
         } else {
             Log.d(TAG_, "Scan button OFF");
             ble_adapter_.stopLeScan(scan_callback_);
+            list_adapter_scan_.clear();
         }
     }
 
@@ -116,8 +139,9 @@ public class DeviceScanActivity extends Activity {
             new BluetoothAdapter.LeScanCallback() {
 
         @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            //BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        public void onLeScan(final BluetoothDevice device, 
+                final int rssi, final byte[] scanRecord) {
+            /** TODO: get general access UUID
             try {
                 Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
                 ParcelUuid[] ids = (ParcelUuid[]) getUuidsMethod.invoke(ble_adapter_, null);
@@ -125,19 +149,15 @@ public class DeviceScanActivity extends Activity {
                     Log.d(TAG_, "id:" + id.toString());
                 }
             } catch (Exception e) {
-                
             }
+            **/
             Log.d(TAG_, "Get device " + scanRecord + ", RSSI:" + rssi);
-            /**
-            final iBeacon ibeacon = iBeaconClass.fromScanData(device,rssi,scanRecord);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mLeDeviceListAdapter.addDevice(ibeacon);
-                    mLeDeviceListAdapter.notifyDataSetChanged();
+                    list_adapter_scan_.update_device(device, rssi, scanRecord);
                 }
             });
-            **/
         }
     };
     
