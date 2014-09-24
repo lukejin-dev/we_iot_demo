@@ -2,21 +2,22 @@ package com.ies.blelib;
 
 import java.util.Date;
 
-import com.ies.mysensortag.DeviceScanActivity;
-
-import android.text.format.Time;
+import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 public class BeaconScanInfo {
     
     private final static String TAG_ = BeaconScanInfo.class.getSimpleName();
     
+    private BluetoothDevice device_;
     private String name_;
     private String address_;
     private int    rssi_;
     Date  last_update_time_;
     
-    public BeaconScanInfo(String name, String address, int rssi) {
+    public BeaconScanInfo(BluetoothDevice device, String name, 
+            String address, int rssi) {
+        device_ = device;
         name_ = name;
         address_ = address;
         set_rssi(rssi);
@@ -37,6 +38,10 @@ public class BeaconScanInfo {
     
     public String get_name() {
         return name_;
+    }
+    
+    public BluetoothDevice get_device() {
+        return device_;
     }
     
     public boolean is_expired() {

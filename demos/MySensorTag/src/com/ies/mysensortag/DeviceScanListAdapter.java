@@ -6,14 +6,20 @@ import com.ies.blelib.BeaconScanInfo;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCallback;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class DeviceScanListAdapter extends BaseAdapter {
     
+    private final static String TAG_ = 
+            DeviceScanListAdapter.class.getSimpleName();
     private ArrayList<BeaconScanInfo> beacon_list_;
     private LayoutInflater inflator_;
     private Activity context_;
@@ -51,8 +57,6 @@ public class DeviceScanListAdapter extends BaseAdapter {
                     (TextView) view.findViewById(R.id.text_mac);
             view_holder.device_name_ = 
                     (TextView) view.findViewById(R.id.text_name);
-            view_holder.device_uuid_ = 
-                    (TextView)view.findViewById(R.id.text_uuid);
             view_holder.device_rssi_ =
                     (TextView)view.findViewById(R.id.text_rssi);
             view.setTag(view_holder);
@@ -68,7 +72,6 @@ public class DeviceScanListAdapter extends BaseAdapter {
             view_holder.device_name_.setText(R.string.unknown_scan_device);
         
         view_holder.device_address_.setText(bsi.get_address());
-        //view_holder.device_uuid_.setText(bsi.get);
         view_holder.device_rssi_.setText("" + bsi.get_rssi());
 
         return view;
@@ -90,6 +93,7 @@ public class DeviceScanListAdapter extends BaseAdapter {
             // Create a new one
             //
             bsi = new BeaconScanInfo(
+                    device,
                     device.getName(), 
                     device.getAddress(),
                     rssi);
@@ -124,9 +128,31 @@ public class DeviceScanListAdapter extends BaseAdapter {
     }
     
     class ViewHolder {
+        BluetoothDevice device_;
         TextView device_name_;
         TextView device_address_;
-        TextView device_uuid_;
         TextView device_rssi_;
-    }    
+    }
+    
+    private OnItemClickListener device_list_click_listener_ = 
+            new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                long arg3) {
+            ViewHolder view_holder = (ViewHolder) arg1.getTag();
+            Log.d(TAG_, "args2: " + arg2);
+            Log.d(TAG_, "args3: " + arg3);
+            BeaconScanInfo bsi = beacon_list_.get(arg2);
+            bsi.get_device().connectGatt(context_, false, 
+                    ble_gatt_callback_);
+        }
+    };
+    
+    public OnItemClickListener get_item_click_listener() {
+        return device_list_click_listener_;
+    }
+    
+    private BluetoothGattCallback ble_gatt_callback_ = 
+            new BluetoothGattCallback() {
+        
+    };
 }

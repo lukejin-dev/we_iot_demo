@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -25,6 +27,7 @@ import android.widget.ToggleButton;
 public class DeviceScanActivity extends Activity {
     
     private final static String TAG_ = DeviceScanActivity.class.getSimpleName();
+    
     private final long DISAPPEAR_CHECK_INTERVAL_ = 1000;
     private ToggleButton button_scan_switch_;
     private ToggleButton button_report_server_;
@@ -48,6 +51,8 @@ public class DeviceScanActivity extends Activity {
         listview_scan_ = (ListView) findViewById(R.id.device_list);
         list_adapter_scan_ = new DeviceScanListAdapter(this);
         listview_scan_.setAdapter(list_adapter_scan_);
+        listview_scan_.setOnItemClickListener(
+                list_adapter_scan_.get_item_click_listener());
         
         //
         // Use this check to determine whether BLE is supported on the device.  
@@ -124,7 +129,8 @@ public class DeviceScanActivity extends Activity {
         public void run() {
             if (button_scan_switch_.isChecked()) {
                 list_adapter_scan_.refresh_disappeared_device();
-                disappear_check_handler_.postDelayed(this, DISAPPEAR_CHECK_INTERVAL_);
+                disappear_check_handler_.postDelayed(this, 
+                        DISAPPEAR_CHECK_INTERVAL_);
             }
         }
     };
@@ -135,8 +141,9 @@ public class DeviceScanActivity extends Activity {
             Log.d(TAG_, "Scan button ON");
             
             //
-            // Ensures Bluetooth is available on the device and it is enabled. If not,
-            // displays a dialog requesting user permission to enable Bluetooth.
+            // Ensures Bluetooth is available on the device and it is enabled. 
+            // If not, displays a dialog requesting user permission to enable 
+            // Bluetooth.
             //
             if (ble_adapter_ == null || !ble_adapter_.isEnabled()) {
                 Intent enableBtIntent = 
@@ -174,17 +181,18 @@ public class DeviceScanActivity extends Activity {
         @Override
         public void onLeScan(final BluetoothDevice device, 
                 final int rssi, final byte[] scanRecord) {
-            /** TODO: get general access UUID
+
             try {
-                Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
-                ParcelUuid[] ids = (ParcelUuid[]) getUuidsMethod.invoke(ble_adapter_, null);
+                Method getUuidsMethod = 
+                     BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
+                ParcelUuid[] ids = 
+                       (ParcelUuid[]) getUuidsMethod.invoke(ble_adapter_, null);
                 for (ParcelUuid id:ids) {
                     Log.d(TAG_, "id:" + id.toString());
                 }
             } catch (Exception e) {
             }
-            **/
-            Log.d(TAG_, "Get device " + scanRecord + ", RSSI:" + rssi);
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -193,6 +201,8 @@ public class DeviceScanActivity extends Activity {
             });
         }
     };
+    
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
