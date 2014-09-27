@@ -1,7 +1,5 @@
 package com.ies.mysensortag;
 
-import java.lang.reflect.Method;
-
 import com.ies.mysensortag.R;
 
 import android.app.Activity;
@@ -13,13 +11,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -181,18 +176,6 @@ public class DeviceScanActivity extends Activity {
         @Override
         public void onLeScan(final BluetoothDevice device, 
                 final int rssi, final byte[] scanRecord) {
-
-            try {
-                Method getUuidsMethod = 
-                     BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
-                ParcelUuid[] ids = 
-                       (ParcelUuid[]) getUuidsMethod.invoke(ble_adapter_, null);
-                for (ParcelUuid id:ids) {
-                    Log.d(TAG_, "id:" + id.toString());
-                }
-            } catch (Exception e) {
-            }
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

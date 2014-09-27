@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textview_service_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service Name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <TextView
+                android:id="@+id/textview_tag_service_uuid"
+                android:layout_weight="0.2"
+                android:text="UUID :" />
+                         
+            <TextView
+                android:id="@+id/textview_service_uuid"
+                android:layout_weight="0.5"
+                android:text="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />              
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <TextView
+                android:id="@+id/textview_tag_service_type"
+                android:layout_weight="0.2"
+                android:text="Type :" />
+                         
+            <TextView
+                android:id="@+id/textview_service_type"
+                android:layout_weight="0.5"
+                android:text="primary" />               
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
