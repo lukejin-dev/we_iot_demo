@@ -7,6 +7,7 @@ import com.ies.blelib.BeaconScanInfo;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCallback;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,8 +143,12 @@ public class DeviceScanListAdapter extends BaseAdapter {
             Log.d(TAG_, "args2: " + arg2);
             Log.d(TAG_, "args3: " + arg3);
             BeaconScanInfo bsi = beacon_list_.get(arg2);
-            bsi.get_device().connectGatt(context_, false, 
-                    ble_gatt_callback_);
+            //
+            // bsi.get_device().connectGatt(context_, false, 
+            //        ble_gatt_callback_);
+            Intent device_activity = 
+                    new Intent(com.ies.mysensortag.DeviceActivity.class.getName());
+            context_.startActivity(device_activity);
         }
     };
     

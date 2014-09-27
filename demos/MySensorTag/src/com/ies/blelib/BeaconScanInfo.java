@@ -46,7 +46,8 @@ public class BeaconScanInfo {
     
     public boolean is_expired() {
         Date now = new Date();
-        long diff_seconds = (now.getTime() - last_update_time_.getTime()) / 1000;
+        long diff_seconds = 
+                (now.getTime() - last_update_time_.getTime()) / 1000;
         Log.d(TAG_, "time diff: " + diff_seconds);
         if (diff_seconds > 1) {
             return true;
