@@ -1,9 +1,11 @@
 package com.ies.mysensortag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.ies.blelib.BeaconScanInfo;
+import com.ies.blelib.service.GattCharacteristics;
 import com.ies.blelib.service.GattCharacteristicsDb;
 import com.ies.blelib.service.GattService;
 import com.ies.blelib.service.GattServiceDb;
@@ -19,9 +21,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-public class ServiceListAdapter extends BaseAdapter {
+public class ServiceListAdapter extends BaseExpandableListAdapter {
 
     private final static String TAG_ = 
             ServiceListAdapter.class.getSimpleName();
@@ -36,74 +39,125 @@ public class ServiceListAdapter extends BaseAdapter {
         inflator_ = context_.getLayoutInflater();
     }
     
-    @Override
-    public int getCount() {
-        if (service_list_ == null) {
-            return 0;
-        }
-        return service_list_.size();
+    public Object getChild(int group_pos, int child_pos) {
+        return  service_list_.get(group_pos).getCharacteristics().get(child_pos);
     }
-
-    @Override
-    public Object getItem(int position) {
-        if (service_list_ == null) {
-            return null;
-        }
-        assert (position < service_list_.size());
-        return service_list_.get(position);
+    
+    public  long  getChildId(int  groupPosition, int  childPosition) {
+        return  childPosition;
     }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    
+    public View getChildView(int groupPosition, int childPosition,
+            boolean  isLastChild, View view, ViewGroup parent) {
         if (service_list_ == null) {
             return null;
         }
         
-        ViewHolder view_holder;
+        CharViewHolder view_holder;
+        
+        // General ListView optimization code.
+        if (view == null) {
+            view = inflator_.inflate(R.layout.gatt_characteristics, null);
+            view_holder = new CharViewHolder();
+            view_holder.char_name_ = 
+                    (TextView) view.findViewById(R.id.char_name);
+            view_holder.char_uuid_ = 
+                    (TextView) view.findViewById(R.id.char_uuid);
+            view.setTag(view_holder);
+        } else {
+            view_holder = (CharViewHolder) view.getTag();
+        }
+
+        BluetoothGattCharacteristic ble_gatt_char = 
+                service_list_.get(groupPosition).getCharacteristics().get(childPosition);
+        GattCharacteristics gatt_char = 
+                GattCharacteristicsDb.get(ble_gatt_char.getUuid().toString());
+        if (gatt_char != null) {
+            view_holder.char_name_.setText(gatt_char.get_name());
+            view_holder.char_uuid_.setText(gatt_char.get_uuid());
+        } else {
+            view_holder.char_name_.setText("Unknown Service");
+            view_holder.char_uuid_.setText(ble_gatt_char.getUuid().toString());
+        }
+        return view;        
+    }
+    
+    public  Object getGroup(int  groupPosition)  {  
+        return  service_list_.get(groupPosition);  
+    }      
+    
+    public  int  getGroupCount() {  
+        if (service_list_ == null) {
+            return 0;
+        }        
+        return  service_list_.size();  
+    }      
+    
+    public  long getGroupId(int  groupPosition) {  
+        return  groupPosition;  
+    }      
+    
+    public  View getGroupView(int  groupPosition, boolean  isExpanded,  
+            View view, ViewGroup parent) {  
+        if (service_list_ == null) {
+            return null;
+        }
+        
+        ServiceViewHolder view_holder;
         
         // General ListView optimization code.
         if (view == null) {
             view = inflator_.inflate(R.layout.device_service, null);
-            view_holder = new ViewHolder();
+            view_holder = new ServiceViewHolder();
             view_holder.service_name_ = 
                     (TextView) view.findViewById(R.id.textview_service_name);
             view_holder.service_uuid_ = 
                     (TextView) view.findViewById(R.id.textview_service_uuid);
-            view_holder.service_type_ =
-                    (TextView)view.findViewById(R.id.textview_service_type);
             view.setTag(view_holder);
         } else {
-            view_holder = (ViewHolder) view.getTag();
+            view_holder = (ServiceViewHolder) view.getTag();
         }
 
-        BluetoothGattService service = service_list_.get(position);
+        BluetoothGattService service = service_list_.get(groupPosition);
         GattService gs = GattServiceDb.get(service.getUuid().toString());
         if (gs != null) {
             view_holder.service_name_.setText(gs.get_name());
             view_holder.service_uuid_.setText(service.getUuid().toString());
-            view_holder.service_type_.setText(gs.get_type());
         } else {
             view_holder.service_name_.setText("Unknown Service");
             view_holder.service_uuid_.setText(service.getUuid().toString());
-            view_holder.service_type_.setText("" + service.getType());
-            
         }
-        return view;
-    }
+        return view; 
+    }      
+    
+    public  boolean  hasStableIds() {   
+        return  false ;  
+    }      
+    
+    public boolean isChildSelectable(int groupPosition, int childPosition) {  
+        return  true ;  
+    }      
     
     public void set_list(List<BluetoothGattService> service_list) {
         service_list_ = service_list;
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
-    class ViewHolder {
+    class ServiceViewHolder {
         TextView service_name_;
         TextView service_uuid_;
-        TextView service_type_;
-    }    
+    }
+    
+    class CharViewHolder {
+        TextView char_name_;
+        TextView char_uuid_;
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        if (service_list_ == null) {
+            return 0;
+        }           
+        return service_list_.get(groupPosition).getCharacteristics().size();
+    }
 }

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -38,7 +39,8 @@ public class DeviceActivity extends Activity {
     private BluetoothDevice ble_dev_;
     private BluetoothGatt   ble_gatt_;
     private BluetoothGattCharacteristic ble_gatt_char_;
-    private ListView listview_services_; 
+    private ExpandableListView listview_services_; 
+    private ServiceListAdapter service_list_adapter_;
     
     private static String status_ = STATUS_DISCONNECTED;
     
@@ -104,9 +106,9 @@ public class DeviceActivity extends Activity {
         //
         // Setup service list view
         //
-        listview_services_ = (ListView) findViewById(id.listview_services);
-        ServiceListAdapter las = new ServiceListAdapter(this);
-        listview_services_.setAdapter(las);
+        listview_services_ = (ExpandableListView) findViewById(id.listview_services);
+        service_list_adapter_ = new ServiceListAdapter(this);
+        listview_services_.setAdapter(service_list_adapter_);
         
         
     }
@@ -158,9 +160,7 @@ public class DeviceActivity extends Activity {
     }
     
     private void update_ui_detail_service() {
-        ServiceListAdapter adapter = 
-                (ServiceListAdapter)listview_services_.getAdapter();
-        adapter.set_list(ble_gatt_.getServices());
+        service_list_adapter_.set_list(ble_gatt_.getServices());
     }
     
     private BluetoothGattCallback gatt_callback_ = 
