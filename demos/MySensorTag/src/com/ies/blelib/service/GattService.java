@@ -2,32 +2,27 @@ package com.ies.blelib.service;
 
 import java.util.HashMap;
 
-public class GattService extends BaseService {
+public class GattService {
 
-    private static final String UUID_SERVICE = "00001801-0000-1000-8000-00805f9b34fb";
-
-    private static final String UUID_DEVICE_NAME = "00002a05-0000-1000-8000-00805f9b34fb";
-
-    private static final HashMap<String, String> CHARACTERISTIC_MAP = new HashMap<String, String>();
-
-    static {
-        CHARACTERISTIC_MAP.put(UUID_DEVICE_NAME, "Service Changed");
+    private String name_;
+    private String type_;
+    private String uuid_;
+    
+    public GattService(String name, String type, String uuid) {
+        name_ = name;
+        type_ = type;
+        uuid_ = uuid.toLowerCase();
     }
-
-    @Override
-    public String getUUID() {
-        return UUID_SERVICE;
+    
+    public String get_name() {
+        return name_;
     }
-
-    @Override
-    public String getName() {
-        return "GATT Service";
+    
+    public String get_type() {
+        return type_;
     }
-
-    @Override
-    public String getCharacteristicName(String uuid) {
-        if (!CHARACTERISTIC_MAP.containsKey(uuid))
-            return "Unknown";
-        return CHARACTERISTIC_MAP.get(uuid);
+    
+    public String get_uuid() {
+        return uuid_;
     }
 }

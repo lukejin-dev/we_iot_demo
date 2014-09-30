@@ -3,6 +3,8 @@ package com.ies.mysensortag;
 import java.util.List;
 
 import com.ies.blelib.BeaconScanInfo;
+import com.ies.blelib.service.GattService;
+import com.ies.blelib.service.GattServiceDb;
 import com.ies.mysensortag.DeviceScanListAdapter.ViewHolder;
 
 import android.app.Activity;
@@ -73,10 +75,17 @@ public class ServiceListAdapter extends BaseAdapter {
         }
 
         BluetoothGattService service = service_list_.get(position);
-        view_holder.service_name_.setText(service.getUuid().toString());
-        view_holder.service_uuid_.setText(service.getUuid().toString());
-        view_holder.service_type_.setText("" + service.getType());
-        
+        GattService gs = GattServiceDb.get(service.getUuid().toString());
+        if (gs != null) {
+            view_holder.service_name_.setText(gs.get_name());
+            view_holder.service_uuid_.setText(service.getUuid().toString());
+            view_holder.service_type_.setText(gs.get_type());
+        } else {
+            view_holder.service_name_.setText("Unknown Service");
+            view_holder.service_uuid_.setText(service.getUuid().toString());
+            view_holder.service_type_.setText("" + service.getType());
+            
+        }
         return view;
     }
     
