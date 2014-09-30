@@ -8,7 +8,7 @@ public class GattCharacteristics {
     public GattCharacteristics(String name, String type, String uuid) {
         name_ = name;
         type_ = type;
-        uuid_ = uuid;
+        uuid_ = uuid.toLowerCase();
     }
     
     public String get_name() {

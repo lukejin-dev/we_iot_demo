@@ -1,16 +1,20 @@
 package com.ies.mysensortag;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.ies.blelib.BeaconScanInfo;
+import com.ies.blelib.service.GattCharacteristicsDb;
 import com.ies.blelib.service.GattService;
 import com.ies.blelib.service.GattServiceDb;
 import com.ies.mysensortag.DeviceScanListAdapter.ViewHolder;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,9 @@ import android.widget.TextView;
 
 public class ServiceListAdapter extends BaseAdapter {
 
+    private final static String TAG_ = 
+            ServiceListAdapter.class.getSimpleName();
+    
     private Activity context_;
     private List<BluetoothGattService> service_list_;
     private LayoutInflater inflator_;
