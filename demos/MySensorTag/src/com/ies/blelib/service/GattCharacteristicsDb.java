@@ -100,6 +100,78 @@ public class GattCharacteristicsDb {
             "00002A46-0000-1000-8000-00805f9b34fb";
     public static final String UUID_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS =
             "00002A04-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_PERIPHERAL_PRIVACY_FLAG =
+            "00002A02-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_PNP_ID = 
+            "00002A50-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_POSITION_QUALITY = 
+            "00002A69-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_PROTOCOL_MODE = 
+            "00002A4E-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RECONNECTION_ADDRESS =
+            "00002A03-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RECORD_ACCESS_CONTROL_POINT =
+            "00002A52-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_REFERENCE_TIME_INFORMATION =
+            "00002A14-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_REPORT =
+            "00002A4D-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_REPORT_MAP =
+            "00002A4B-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RINGER_CONTROL_POINT = 
+            "00002A40-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RINGER_SETTING = 
+            "00002A41-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RSC_FEATURE = 
+            "00002A54-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_RSC_MEASUREMENT =
+            "00002A53-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SC_CONTROL_POINT =
+            "00002A55-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SCAN_INTERVAL_WINDOW =
+            "00002A4F-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SCAN_REFRESH =
+            "00002A31-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SENSOR_LOCATION =
+            "00002A5D-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SERIAL_NUMBER_STRING =
+            "00002A25-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SERVICE_CHANGED =
+            "00002A05-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SOFTWARE_REVISION_STRING = 
+            "00002A28-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SUPPORTED_NEW_ALERT_CATEGORY =
+            "00002A47-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SUPPORTED_UNREAD_ALERT_CATEGORY =
+            "00002A48-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_SYSTEM_ID = 
+            "00002A23-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TEMPERATURE_MEASUREMENT =
+            "00002A1C-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TEMPERATURE_TYPE =
+            "00002A1D-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_ACCURACY =
+            "00002A12-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_SOURCE =
+            "00002A13-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_UPDATE_CONTROL_POINT =
+            "00002A16-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_UPDATE_STATE =
+            "00002A17-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_WITH_DST =
+            "00002A11-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TIME_ZONE = 
+            "00002A0E-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TX_POWER_LEVEL =
+            "00002A07-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_UNREAD_ALERT_STATUS =
+            "00002A45-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_ADVERTISING_INTERVAL =
+            "00002b30-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_ACCELERATION_ORIENTATION =
+            "00002b20-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_TEMPERATURE =
+            "00002b10-0000-1000-8000-00805f9b34fb";
     
     
     private static HashMap<String, GattCharacteristics> map = 
@@ -345,7 +417,188 @@ public class GattCharacteristicsDb {
                 new GattCharacteristics(
                         "Peripheral Preferred Connection Parameters", 
                         "org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters",
-                        UUID_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS));          
+                        UUID_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS));    
+        map.put(UUID_PERIPHERAL_PRIVACY_FLAG.toLowerCase(), 
+                new GattCharacteristics(
+                        "Peripheral Privacy Flag", 
+                        "org.bluetooth.characteristic.gap.peripheral_privacy_flag",
+                        UUID_PERIPHERAL_PRIVACY_FLAG));          
+        map.put(UUID_PNP_ID.toLowerCase(), 
+                new GattCharacteristics(
+                        "PnP ID", 
+                        "org.bluetooth.characteristic.pnp_id",
+                        UUID_PNP_ID));          
+        map.put(UUID_POSITION_QUALITY.toLowerCase(), 
+                new GattCharacteristics(
+                        "Position Quality", 
+                        "org.bluetooth.position_quality",
+                        UUID_POSITION_QUALITY));         
+        map.put(UUID_PROTOCOL_MODE.toLowerCase(), 
+                new GattCharacteristics(
+                        "Protocol Mode", 
+                        "org.bluetooth.characteristic.protocol_mode",
+                        UUID_PROTOCOL_MODE));        
+        map.put(UUID_RECONNECTION_ADDRESS.toLowerCase(), 
+                new GattCharacteristics(
+                        "Reconnection Address", 
+                        "org.bluetooth.characteristic.gap.reconnection_address",
+                        UUID_RECONNECTION_ADDRESS));          
+        map.put(UUID_RECORD_ACCESS_CONTROL_POINT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Record Access Control Point", 
+                        "org.bluetooth.characteristic.record_access_control_point",
+                        UUID_RECORD_ACCESS_CONTROL_POINT));         
+        map.put(UUID_REFERENCE_TIME_INFORMATION.toLowerCase(), 
+                new GattCharacteristics(
+                        "Reference Time Information", 
+                        "org.bluetooth.characteristic.reference_time_information",
+                        UUID_REFERENCE_TIME_INFORMATION));         
+        map.put(UUID_REPORT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Report", 
+                        "org.bluetooth.characteristic.report",
+                        UUID_REPORT));        
+        map.put(UUID_REPORT_MAP.toLowerCase(), 
+                new GattCharacteristics(
+                        "Report Map", 
+                        "org.bluetooth.characteristic.report_map",
+                        UUID_REPORT_MAP));         
+        map.put(UUID_RINGER_CONTROL_POINT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Ringer Control Point", 
+                        "org.bluetooth.characteristic.ringer_control_point",
+                        UUID_RINGER_CONTROL_POINT));          
+        map.put(UUID_RINGER_SETTING.toLowerCase(), 
+                new GattCharacteristics(
+                        "Ringer Setting", 
+                        "org.bluetooth.characteristic.ringer_setting",
+                        UUID_RINGER_SETTING));         
+        map.put(UUID_RSC_FEATURE.toLowerCase(), 
+                new GattCharacteristics(
+                        "RSC Feature", 
+                        "org.bluetooth.characteristic.rsc_feature",
+                        UUID_RSC_FEATURE));          
+        map.put(UUID_RSC_MEASUREMENT.toLowerCase(), 
+                new GattCharacteristics(
+                        "RSC Measurement", 
+                        "org.bluetooth.characteristic.rsc_measurement",
+                        UUID_RSC_MEASUREMENT));         
+        map.put(UUID_SC_CONTROL_POINT.toLowerCase(), 
+                new GattCharacteristics(
+                        "SC Control Point", 
+                        "org.bluetooth.characteristic.sc_control_point",
+                        UUID_SC_CONTROL_POINT));        
+        map.put(UUID_SCAN_INTERVAL_WINDOW.toLowerCase(), 
+                new GattCharacteristics(
+                        "Scan Interval Window", 
+                        "org.bluetooth.characteristic.scan_interval_window",
+                        UUID_SCAN_INTERVAL_WINDOW));         
+        map.put(UUID_SCAN_REFRESH.toLowerCase(), 
+                new GattCharacteristics(
+                        "Scan Refresh", 
+                        "org.bluetooth.characteristic.scan_refresh",
+                        UUID_SCAN_REFRESH));          
+        map.put(UUID_SENSOR_LOCATION.toLowerCase(), 
+                new GattCharacteristics(
+                        "Sensor Location", 
+                        "org.bluetooth.characteristic.sensor_location",
+                        UUID_SENSOR_LOCATION));         
+        map.put(UUID_SERIAL_NUMBER_STRING.toLowerCase(), 
+                new GattCharacteristics(
+                        "Serial Number String", 
+                        "org.bluetooth.characteristic.serial_number_string",
+                        UUID_SERIAL_NUMBER_STRING));        
+        map.put(UUID_SERVICE_CHANGED.toLowerCase(), 
+                new GattCharacteristics(
+                        "Service Changed", 
+                        "org.bluetooth.characteristic.gatt.service_changed",
+                        UUID_SERVICE_CHANGED));
+        map.put(UUID_SOFTWARE_REVISION_STRING.toLowerCase(), 
+                new GattCharacteristics(
+                        "Software Revision String", 
+                        "org.bluetooth.characteristic.software_revision_string",
+                        UUID_SOFTWARE_REVISION_STRING));    
+        map.put(UUID_SUPPORTED_NEW_ALERT_CATEGORY.toLowerCase(), 
+                new GattCharacteristics(
+                        "Supported New Alert Category", 
+                        "org.bluetooth.characteristic.supported_new_alert_category",
+                        UUID_SUPPORTED_NEW_ALERT_CATEGORY));          
+        map.put(UUID_SUPPORTED_UNREAD_ALERT_CATEGORY.toLowerCase(), 
+                new GattCharacteristics(
+                        "Supported Unread Alert Category", 
+                        "org.bluetooth.characteristic.supported_unread_alert_category",
+                        UUID_SUPPORTED_UNREAD_ALERT_CATEGORY));        
+        map.put(UUID_SYSTEM_ID.toLowerCase(), 
+                new GattCharacteristics(
+                        "System ID", 
+                        "org.bluetooth.characteristic.system_id",
+                        UUID_SYSTEM_ID));        
+        map.put(UUID_TEMPERATURE_MEASUREMENT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Temperature Measurement", 
+                        "org.bluetooth.characteristic.temperature_measurement",
+                        UUID_TEMPERATURE_MEASUREMENT));         
+        map.put(UUID_TEMPERATURE_TYPE.toLowerCase(), 
+                new GattCharacteristics(
+                        "Temperature Type", 
+                        "org.bluetooth.characteristic.temperature_type",
+                        UUID_TEMPERATURE_TYPE));         
+        map.put(UUID_TIME_ACCURACY.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time Accuracy", 
+                        "org.bluetooth.characteristic.time_accuracy",
+                        UUID_TIME_ACCURACY));        
+        map.put(UUID_TIME_SOURCE.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time Source", 
+                        "org.bluetooth.characteristic.time_source",
+                        UUID_TIME_SOURCE));          
+        map.put(UUID_TIME_UPDATE_CONTROL_POINT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time Update Control Point", 
+                        "org.bluetooth.characteristic.time_update_control_point",
+                        UUID_TIME_UPDATE_CONTROL_POINT));          
+        map.put(UUID_TIME_UPDATE_CONTROL_POINT.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time Update State", 
+                        "org.bluetooth.characteristic.time_update_state",
+                        UUID_TIME_UPDATE_CONTROL_POINT));           
+        map.put(UUID_TIME_WITH_DST.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time with DST", 
+                        "org.bluetooth.characteristic.time_with_dst",
+                        UUID_TIME_WITH_DST));          
+        map.put(UUID_TIME_ZONE.toLowerCase(), 
+                new GattCharacteristics(
+                        "Time Zone", 
+                        "org.bluetooth.characteristic.time_zone",
+                        UUID_TIME_ZONE));  
+        map.put(UUID_TX_POWER_LEVEL.toLowerCase(), 
+                new GattCharacteristics(
+                        "Tx Power Level", 
+                        "org.bluetooth.characteristic.tx_power_level",
+                        UUID_TX_POWER_LEVEL));      
+        map.put(UUID_UNREAD_ALERT_STATUS.toLowerCase(), 
+                new GattCharacteristics(
+                        "Unread Alert Status", 
+                        "org.bluetooth.characteristic.unread_alert_status",
+                        UUID_UNREAD_ALERT_STATUS));        
+        map.put(UUID_ADVERTISING_INTERVAL.toLowerCase(), 
+                new GattCharacteristics(
+                        "Advertising Interval", 
+                        "",
+                        UUID_ADVERTISING_INTERVAL));        
+        map.put(UUID_ACCELERATION_ORIENTATION.toLowerCase(), 
+                new GattCharacteristics(
+                        "Acceleration/Oritentation", 
+                        "",
+                        UUID_ACCELERATION_ORIENTATION));         
+        map.put(UUID_TEMPERATURE.toLowerCase(), 
+                new GattCharacteristics(
+                        "Temperature", 
+                        "",
+                        UUID_TEMPERATURE));         
+        
     }
     
     public static GattCharacteristics get(String uuid) {
