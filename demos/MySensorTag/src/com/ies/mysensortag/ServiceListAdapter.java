@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.ies.blelib.BeaconScanInfo;
-import com.ies.blelib.service.GattCharacteristics;
+import com.ies.blelib.service.GattCharacteristicsInfo;
 import com.ies.blelib.service.GattCharacteristicsDb;
-import com.ies.blelib.service.GattService;
+import com.ies.blelib.service.GattServiceInfo;
 import com.ies.blelib.service.GattServiceDb;
 import com.ies.mysensortag.DeviceScanListAdapter.ViewHolder;
 
@@ -70,7 +70,7 @@ public class ServiceListAdapter extends BaseExpandableListAdapter {
 
         BluetoothGattCharacteristic ble_gatt_char = 
                 service_list_.get(groupPosition).getCharacteristics().get(childPosition);
-        GattCharacteristics gatt_char = 
+        GattCharacteristicsInfo gatt_char = 
                 GattCharacteristicsDb.get(ble_gatt_char.getUuid().toString());
         if (gatt_char != null) {
             view_holder.char_name_.setText(gatt_char.get_name());
@@ -119,7 +119,7 @@ public class ServiceListAdapter extends BaseExpandableListAdapter {
         }
 
         BluetoothGattService service = service_list_.get(groupPosition);
-        GattService gs = GattServiceDb.get(service.getUuid().toString());
+        GattServiceInfo gs = GattServiceDb.get(service.getUuid().toString());
         if (gs != null) {
             view_holder.service_name_.setText(gs.get_name());
             view_holder.service_uuid_.setText(service.getUuid().toString());

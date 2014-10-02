@@ -1,7 +1,10 @@
 package com.ies.mysensortag;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ies.blelib.sensor.BleSensor;
+import com.ies.blelib.sensor.SensorDb;
 import com.ies.mysensortag.R.id;
 
 import android.app.Activity;
@@ -41,6 +44,7 @@ public class DeviceActivity extends Activity {
     private BluetoothGattCharacteristic ble_gatt_char_;
     private ExpandableListView listview_services_; 
     private ServiceListAdapter service_list_adapter_;
+    private List<BleSensor> sensors_;
     
     private static String status_ = STATUS_DISCONNECTED;
     
@@ -49,14 +53,17 @@ public class DeviceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_main);
 
+        sensors_ = new ArrayList<BleSensor>();
+        
         setup_ui();
+
         
         if (getIntent().getExtras() == null) {
             Log.e(TAG_, "No bluetooth device selected or found.");
             finish();
         }
-        
         ble_dev_ = getIntent().getExtras().getParcelable(BT_DEV_OBJ);
+        
     }
 
     @Override
@@ -130,6 +137,7 @@ public class DeviceActivity extends Activity {
                 update_ui_detail_rssi(msg.arg1);
             } else if (msg.what == UI_EVENT_UPDATE_SERVICE) {
                 update_ui_detail_service();
+                update_ui_sensors();
             }
         }
     };
@@ -162,6 +170,15 @@ public class DeviceActivity extends Activity {
         service_list_adapter_.set_list(ble_gatt_.getServices());
     }
     
+    private void update_ui_sensors() {
+        for (BluetoothGattService service:ble_gatt_.getServices()) {
+            BleSensor s = SensorDb.get(service.getUuid().toString().toLowerCase());
+            if (s != null) {
+                Log.i(TAG_, "Found a sensor!" + s.get_name());
+            }
+        }
+        
+    }
     private BluetoothGattCallback gatt_callback_ = 
             new BluetoothGattCallback() {
         

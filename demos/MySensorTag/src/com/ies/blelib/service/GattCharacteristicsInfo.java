@@ -1,14 +1,11 @@
 package com.ies.blelib.service;
 
-import java.util.HashMap;
-
-public class GattService {
-
+public class GattCharacteristicsInfo {
     private String name_;
     private String type_;
     private String uuid_;
     
-    public GattService(String name, String type, String uuid) {
+    public GattCharacteristicsInfo(String name, String type, String uuid) {
         name_ = name;
         type_ = type;
         uuid_ = uuid.toLowerCase();
@@ -18,11 +15,11 @@ public class GattService {
         return name_;
     }
     
-    public String get_type() {
-        return type_;
-    }
-    
     public String get_uuid() {
         return uuid_;
+    }
+    
+    public String get_type() {
+        return type_;
     }
 }
