@@ -130,7 +130,6 @@
                         android:layout_height="fill_parent" >
                     </ListView>                    
                 </LinearLayout>
-                
             </FrameLayout>
         </LinearLayout>
     </TabHost>

@@ -14,11 +14,14 @@ public abstract class BleSensor<T> {
             "00002902-0000-1000-8000-00805f9b34fb";
     
     private T data;
+    private byte[] raw_data;
+    private boolean is_enabled = false;
     
     public abstract String get_name();
     public abstract String get_service_uuid();
     public abstract String get_data_uuid();
     public abstract String get_configure_uuid();
+    public abstract String get_value_string();
     protected abstract T parse(BluetoothGattCharacteristic c);
     
     public String get_characteristic_name(String uuid) {
@@ -31,12 +34,17 @@ public abstract class BleSensor<T> {
         return "Unknown";
     }
     
-    public T get_data() {
+    public T get_value() {
         return data;
+    }
+    
+    public byte[] get_raw_value() {
+        return raw_data;
     }
     
     public void onCharacteristicChanged(BluetoothGattCharacteristic c) {
         data = parse(c);
+        raw_data = c.getValue();
     }    
     
     private BluetoothGattCharacteristic get_characteristic(
@@ -68,12 +76,16 @@ public abstract class BleSensor<T> {
         BluetoothGattCharacteristic dataCharacteristic = 
                 get_characteristic(gatt, get_data_uuid());
         BluetoothGattDescriptor config = dataCharacteristic.getDescriptor(CCC);
+        if (config == null) {
+            return;
+        }
+        
         // enable/disable locally
         gatt.setCharacteristicNotification(dataCharacteristic, start);
         config.setValue(start ? 
                 BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : 
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-     // enable/disable remotely
+        // enable/disable remotely
         gatt.writeDescriptor(config);
     }
     
@@ -83,5 +95,23 @@ public abstract class BleSensor<T> {
     
     public void enable(BluetoothGatt gatt, boolean enable) {
         gatt_char_write(gatt, get_configure_uuid(), get_config_values(enable));
+        try {
+            Thread.sleep(500);
+        } catch (Exception e) {
+            
+        }
+        gatt_char_notify(gatt, enable);
+        is_enabled = enable;
+    }
+    
+    public String get_raw_value_string() {
+        String ret = "N/A";
+        if (raw_data != null && is_enabled) {
+            ret = "";
+            for (byte i:raw_data) {
+                ret += " " + Integer.toHexString(i & 0xff);
+            }
+        }
+        return ret;
     }
 }

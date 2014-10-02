@@ -12,6 +12,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class DeviceActivity extends Activity {
     private final static int UI_EVENT_UPDATE_DEVICE = 1;
     private final static int UI_EVENT_UPDATE_RSSI = 2;
     private final static int UI_EVENT_UPDATE_SERVICE = 3;
+    private final static int UI_EVENT_UPDATE_SENSOR_VALUE = 4;
+    
     public final static String BT_DEV_OBJ = "bt_dev_obj";
     
     private TabHost tabhost_device_;
@@ -43,8 +46,9 @@ public class DeviceActivity extends Activity {
     private BluetoothGatt   ble_gatt_;
     private BluetoothGattCharacteristic ble_gatt_char_;
     private ExpandableListView listview_services_; 
+    private ListView listview_sensors_;
     private ServiceListAdapter service_list_adapter_;
-    private List<BleSensor> sensors_;
+    private SensorListAdapter sensor_list_adapter_;
     
     private static String status_ = STATUS_DISCONNECTED;
     
@@ -52,24 +56,14 @@ public class DeviceActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_main);
-
-        sensors_ = new ArrayList<BleSensor>();
         
         setup_ui();
-
         
         if (getIntent().getExtras() == null) {
             Log.e(TAG_, "No bluetooth device selected or found.");
             finish();
         }
         ble_dev_ = getIntent().getExtras().getParcelable(BT_DEV_OBJ);
-        
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG_, "onResume");
         
         Log.d(TAG_, "Associate to bluetooth device: " + ble_dev_);
         ble_gatt_ = ble_dev_.connectGatt(this, true, gatt_callback_);
@@ -80,6 +74,16 @@ public class DeviceActivity extends Activity {
         
         rssi_refresh_runnable_.run();
     }
+
+    public BluetoothGatt get_gatt() {
+        return ble_gatt_;
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG_, "onResume");
+    }
     
     @Override
     protected void onPause() {
@@ -89,11 +93,12 @@ public class DeviceActivity extends Activity {
     }
     
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         super.onStop();
-        Log.d(TAG_, "onStop");
+        Log.d(TAG_, "onDestroy");
         
         if (ble_gatt_ != null) {
+            ble_gatt_.disconnect();
             ble_gatt_.close();
             ble_gatt_ = null;
         }
@@ -116,7 +121,12 @@ public class DeviceActivity extends Activity {
         service_list_adapter_ = new ServiceListAdapter(this);
         listview_services_.setAdapter(service_list_adapter_);
         
-        
+        //
+        // Setup sensor list view
+        //
+        listview_sensors_ = (ListView) findViewById(id.listview_sensors);
+        sensor_list_adapter_ = new SensorListAdapter(this);
+        listview_sensors_.setAdapter(sensor_list_adapter_);
     }
     
     private void create_tab(int layout_id, String tag, String label) {
@@ -138,6 +148,8 @@ public class DeviceActivity extends Activity {
             } else if (msg.what == UI_EVENT_UPDATE_SERVICE) {
                 update_ui_detail_service();
                 update_ui_sensors();
+            } else if (msg.what == UI_EVENT_UPDATE_SENSOR_VALUE) {
+                sensor_list_adapter_.notifyDataSetChanged();
             }
         }
     };
@@ -162,29 +174,40 @@ public class DeviceActivity extends Activity {
     }
     
     private void update_ui_detail_rssi(int rssi) {
+        if (ble_gatt_ == null) {
+            return;
+        }
+        
         TextView tv_rssi = (TextView)findViewById(R.id.textview_rssi);
         tv_rssi.setText("" + rssi);
     }
     
     private void update_ui_detail_service() {
+        if (ble_gatt_ == null) {
+            return;
+        }
         service_list_adapter_.set_list(ble_gatt_.getServices());
     }
     
     private void update_ui_sensors() {
-        for (BluetoothGattService service:ble_gatt_.getServices()) {
-            BleSensor s = SensorDb.get(service.getUuid().toString().toLowerCase());
-            if (s != null) {
-                Log.i(TAG_, "Found a sensor!" + s.get_name());
-            }
+        if (ble_gatt_ == null) {
+            return;
         }
         
+        for (BluetoothGattService service:ble_gatt_.getServices()) {
+            BleSensor s = 
+                    SensorDb.get(service.getUuid().toString().toLowerCase());
+            if (s != null) {
+                sensor_list_adapter_.add_sensor(s);
+            }
+        }
     }
+    
     private BluetoothGattCallback gatt_callback_ = 
             new BluetoothGattCallback() {
         
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-            super.onReadRemoteRssi(gatt, rssi, status);
             Message msg = new Message();
             msg.what = UI_EVENT_UPDATE_RSSI;
             msg.arg1 = rssi;
@@ -194,7 +217,7 @@ public class DeviceActivity extends Activity {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, 
                 int newState) {
-            Log.d(TAG_, "onConnectionStateChange: " + status + " => " + 
+            Log.i(TAG_, "onConnectionStateChange: " + status + " => " + 
                     newState);
             
             if(newState == BluetoothProfile.STATE_CONNECTED){
@@ -215,7 +238,7 @@ public class DeviceActivity extends Activity {
                 //
                 // Discovery the service
                 //
-                ble_gatt_.discoverServices();
+                gatt.discoverServices();
                 
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 status_ = STATUS_DISCONNECTED;
@@ -225,7 +248,7 @@ public class DeviceActivity extends Activity {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Log.d(TAG_, "onServicesDiscovered, status: " + status);
+            Log.i(TAG_, "onServicesDiscovered, status: " + status);
             
             if(status == BluetoothGatt.GATT_SUCCESS) {
                 //
@@ -243,7 +266,7 @@ public class DeviceActivity extends Activity {
                 BluetoothGatt gatt,
                 BluetoothGattCharacteristic characteristic,
                 int status) {
-            Log.d(TAG_, "onCharacteristicRead, status: " + status);
+            Log.i(TAG_, "onCharacteristicRead, status: " + status);
             
             if (status == BluetoothGatt.GATT_SUCCESS) {
               
@@ -254,8 +277,45 @@ public class DeviceActivity extends Activity {
         public void onCharacteristicChanged(
                 BluetoothGatt gatt,
                 BluetoothGattCharacteristic characteristic) {
-            Log.d(TAG_, "onCharacteristicChanged");
+            Log.i(TAG_, "onCharacteristicChanged");
+            
+            String service_id = characteristic.getService().getUuid().toString();
+            String char_id = characteristic.getUuid().toString();
+            
+            BleSensor sensor = sensor_list_adapter_.get_sensor(service_id);
+            if (sensor != null) {
+                sensor.onCharacteristicChanged(characteristic);
+                String text = sensor.get_value_string();
+                Log.i(TAG_, "value : " + text);
+                
+                Message msg = new Message();
+                msg.what = UI_EVENT_UPDATE_SENSOR_VALUE;
+                msg.obj = sensor;
+                ui_event_handler_.sendMessage(msg);                
+            }
         }
         
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt,
+                BluetoothGattCharacteristic characteristic, int status) {
+            Log.i(TAG_, "onCharacteristicWrite: " + status);
+        }
+        
+        @Override
+        public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+                int status) {
+            Log.i(TAG_, "onDescriptorRead: " + status);
+        }
+        
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+                int status) {
+            Log.i(TAG_, "onDescriptorWrite: " + status);
+        }     
+        
+        @Override
+        public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+            Log.i(TAG_, "onReliableWriteCompleted: " + status);
+        }        
     };    
 }

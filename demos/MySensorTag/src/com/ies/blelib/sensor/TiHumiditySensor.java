@@ -45,4 +45,8 @@ public class TiHumiditySensor<Double> extends TiSensor {
         a = a - (a % 4);
         return (-6f) + 125f * (a / 65535f);
     }
+    
+    public String get_value_string() {
+       return "" + get_value();
+    }
 }
