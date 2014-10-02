@@ -50,14 +50,28 @@ public class DeviceActivity extends Activity {
         setContentView(R.layout.device_main);
 
         setup_ui();
-        init_ble_device();
+        
+        if (getIntent().getExtras() == null) {
+            Log.e(TAG_, "No bluetooth device selected or found.");
+            finish();
+        }
+        
+        ble_dev_ = getIntent().getExtras().getParcelable(BT_DEV_OBJ);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG_, "onResume");
-
+        
+        Log.d(TAG_, "Associate to bluetooth device: " + ble_dev_);
+        ble_gatt_ = ble_dev_.connectGatt(this, true, gatt_callback_);
+        if (ble_gatt_ == null) {
+            Log.e(TAG_, "Fail to connect bluetooth service!");
+            finish();
+        }
+        
+        rssi_refresh_runnable_.run();
     }
     
     @Override
@@ -75,21 +89,6 @@ public class DeviceActivity extends Activity {
         if (ble_gatt_ != null) {
             ble_gatt_.close();
             ble_gatt_ = null;
-        }
-    }
-
-    private void init_ble_device() {
-        if (getIntent().getExtras() == null) {
-            Log.e(TAG_, "No bluetooth device selected or found.");
-            finish();
-        }
-        
-        ble_dev_ = getIntent().getExtras().getParcelable(BT_DEV_OBJ);
-        Log.d(TAG_, "Associate to bluetooth device: " + ble_dev_);
-        ble_gatt_ = ble_dev_.connectGatt(this, true, gatt_callback_);
-        if (ble_gatt_ == null) {
-            Log.e(TAG_, "Fail to connect bluetooth service!");
-            finish();
         }
     }
     

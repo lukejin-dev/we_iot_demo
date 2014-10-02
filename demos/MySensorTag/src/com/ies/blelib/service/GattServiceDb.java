@@ -54,6 +54,14 @@ public class GattServiceDb {
     private static final String UUID_ACCELERATION = 
             "00001920-0000-1000-8000-00805f9b34fb";
     
+    //
+    // TI Service
+    //
+    private static final String UUID_TI_SIMPLE_KEY_SERVICE =
+            "0000ffe0-0000-1000-8000-00805f9b34fb";
+    private static final String UUID_TI_THERMOMETER = 
+            "f000aa00-0451-4000-b000-000000000000";
+    
     private static HashMap<String, GattService> map = 
             new HashMap<String, GattService>();
     
@@ -182,7 +190,18 @@ public class GattServiceDb {
                 new GattService(
                         "Acceleration/Orientation Service",
                         "",
-                        UUID_ACCELERATION));         
+                        UUID_ACCELERATION));   
+        map.put(UUID_TI_SIMPLE_KEY_SERVICE.toLowerCase(), 
+                new GattService(
+                        "TI Simple Key Service",
+                        "",
+                        UUID_TI_SIMPLE_KEY_SERVICE));      
+        map.put(UUID_TI_THERMOMETER.toLowerCase(), 
+                new GattService(
+                        "TI Thermometer",
+                        "",
+                        UUID_TI_THERMOMETER));          
+        
     }
     
     public static GattService get(String uuid) {

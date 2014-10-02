@@ -1,6 +1,7 @@
 package com.ies.mysensortag;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.ies.blelib.BeaconScanInfo;
 
@@ -110,12 +111,17 @@ public class DeviceScanListAdapter extends BaseAdapter {
     }
     
     public void refresh_disappeared_device() {
-        for (BeaconScanInfo bsi:beacon_list_) {
+        boolean need_refresh = false;
+        for (Iterator<BeaconScanInfo> it = beacon_list_.iterator(); it.hasNext();) {
+            BeaconScanInfo bsi = it.next();
             if (bsi.is_expired()) {
-                beacon_list_.remove(bsi);
+                it.remove();
+                need_refresh = true;
             }
         }
-        notifyDataSetChanged();
+        if (need_refresh) {
+            notifyDataSetChanged();
+        }
     }
     
     private BeaconScanInfo get_scan_object(String address) {
