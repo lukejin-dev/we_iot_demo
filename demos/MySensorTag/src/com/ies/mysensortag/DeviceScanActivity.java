@@ -41,8 +41,6 @@ public class DeviceScanActivity extends Activity {
         setContentView(R.layout.device_scan_main);
         button_scan_switch_ = 
                 (ToggleButton) findViewById(R.id.scan_swtich_button);
-        button_report_server_ = 
-                (ToggleButton) findViewById(R.id.report_server_button);
         listview_scan_ = (ListView) findViewById(R.id.device_list);
         list_adapter_scan_ = new DeviceScanListAdapter(this);
         listview_scan_.setAdapter(list_adapter_scan_);

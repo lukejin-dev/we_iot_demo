@@ -49,6 +49,7 @@ public class DeviceActivity extends Activity {
     private ListView listview_sensors_;
     private ServiceListAdapter service_list_adapter_;
     private SensorListAdapter sensor_list_adapter_;
+    private CkanReport reporter_;
     
     private static String status_ = STATUS_DISCONNECTED;
     
@@ -73,6 +74,8 @@ public class DeviceActivity extends Activity {
         }
         
         rssi_refresh_runnable_.run();
+        
+        reporter_ = new CkanReport();
     }
 
     public BluetoothGatt get_gatt() {
@@ -150,6 +153,11 @@ public class DeviceActivity extends Activity {
                 update_ui_sensors();
             } else if (msg.what == UI_EVENT_UPDATE_SENSOR_VALUE) {
                 sensor_list_adapter_.notifyDataSetChanged();
+                BleSensor sensor = (BleSensor)msg.obj;
+                reporter_.report_sensor_data(
+                        ble_gatt_.getDevice().getAddress(),
+                        sensor.get_service_uuid(),
+                        sensor.get_value_string());
             }
         }
     };

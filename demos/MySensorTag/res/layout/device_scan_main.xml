@@ -38,15 +38,6 @@
                 android:textOn="@string/stop_scan"
                 android:textOff="@string/start_scan"
                 android:onClick="onScanToggleClicked" />
-
-            <ToggleButton
-                android:id="@+id/report_server_button"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:textOn="@string/stop_report"
-                android:textOff="@string/start_report"
-                android:layout_weight="0.5"
-                android:onClick="onReportToggleClicked" />
             
         </LinearLayout>
     </LinearLayout>
