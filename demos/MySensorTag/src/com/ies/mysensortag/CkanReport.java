@@ -87,8 +87,6 @@ public class CkanReport {
         try {
             HttpPost postRequest = new HttpPost(url.toString());
             postRequest.setHeader("X-CKAN-API-Key", this.apikey_);
-            //postRequest.addHeader("Authorization", this.apikey_);
-            //postRequest.setHeader("Authorization", this.apikey_);
 
             StringEntity input = new StringEntity(data);
             input.setContentType("application/json");
@@ -113,7 +111,6 @@ public class CkanReport {
             Log.e(TAG_, "HttpHostConnectException:" + hhce.toString());
             hhce.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             Log.e(TAG_, "HttpHostConnectException:" + e.toString());
             e.printStackTrace();
         } finally {
@@ -145,7 +142,7 @@ public class CkanReport {
         Log.i(TAG_, "records json string: " + records_json_str);
         
         CkanDataStoreUpsertParam param = new CkanDataStoreUpsertParam();
-        param.set_records(records_json_str);
+        param.add_record(r);
         param.set_resource_id(resource_id_);
         
         post_data_ = gson.toJson(param);
@@ -170,15 +167,16 @@ public class CkanReport {
         public String resource_id;
         public boolean force;
         public String method;
-        public String records;
+        public List<SensorValueRecord> records;
         
         public CkanDataStoreUpsertParam() {
             force = true;
             method = "insert";
+            records = new ArrayList<SensorValueRecord>();
         }
         
-        public void set_records(String r) {
-            records = r;
+        public void add_record(SensorValueRecord r) {
+            records.add(r);
         }
         
         public void set_resource_id(String id) {

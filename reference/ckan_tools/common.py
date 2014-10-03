@@ -23,7 +23,7 @@ def datastore_create(resource_id,api_key):
     	"resource_id": resource_id,
     	"force": True,
     	#"fields": [{"id": "author", "type": "text"}, {"id": "submitted_on", "type": "timestamp"}, {"id": "PM2_5", "type": "float"}, {"id": "CO", "type": "float"}, {"id": "PM10", "type": "float"}, {"id": "SO2", "type": "float"}, {"id": "O3", "type": "float"}, {"id": "NO2", "type": "float"}],
-	"fields": [{"id": "date", "type": "text"}, {"id": "mac_address", "type": "text"}, {"id": "sensor_uuid", "type": "text"}, {"value": "value", "type": "text"}],
+	"fields": [{"id": "date", "type": "text"}, {"id": "mac_address", "type": "text"}, {"id": "sensor_uuid", "type": "text"}, {"id": "value", "type": "text"}],
     	# 'resource': resource,
     	# 'aliases': ['author', 'submitted_on', 'PM2_5', 'CO', 'PM10', 'SO2', 'O3', 'NO2'],
     	# 'records': records
@@ -55,5 +55,5 @@ def datastore_upsert(resource_id,data,api_key):
 	fun_exe(resource_dict,'datastore_upsert',api_key)
 
 # your resource_id and api_key
-resource_id = '88584c0e-4618-41ab-9cc5-25dd8d9ddfa5'
+resource_id = '519e34eb-920d-4215-a634-a47832e03cf6'
 api_key = '268016bf-92cd-48ca-8406-3ad2f1528c1b'
