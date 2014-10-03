@@ -10,8 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.ckan.CKANException;
@@ -30,7 +32,7 @@ public class CkanReport {
     private final static int    DEFAULT_PORT = 80;
     private final static String URL_PATH_ACTION = "/api/3/action/";
     private final static String DEFAULT_API_KEY = "268016bf-92cd-48ca-8406-3ad2f1528c1b";
-    private final static String DEFAULT_RESOURCE_ID = "18abdfec-1369-4d9d-a192-d25159dccac1";
+    private final static String DEFAULT_RESOURCE_ID = "519e34eb-920d-4215-a634-a47832e03cf6";
     
     private Date last_report_time_;
     private boolean is_transferring_;
@@ -78,13 +80,15 @@ public class CkanReport {
     protected String post(URL url, String data) {
         String body = "";
         
+        Log.i(TAG_, "api key: " + this.apikey_);
         Log.i(TAG_, "url - " + url.toString() + "  data - " + data);
         
         HttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPost postRequest = new HttpPost(url.toString());
-            //postRequest.setHeader("X-CKAN-API-Key", this.apikey_);
-            postRequest.setHeader("Authorization", this.apikey_);
+            postRequest.setHeader("X-CKAN-API-Key", this.apikey_);
+            //postRequest.addHeader("Authorization", this.apikey_);
+            //postRequest.setHeader("Authorization", this.apikey_);
 
             StringEntity input = new StringEntity(data);
             input.setContentType("application/json");
@@ -102,8 +106,16 @@ public class CkanReport {
             }
             
             Log.i(TAG_, "response: " + body);
-        } catch (IOException ioe) {
-            System.out.println(ioe);
+        } catch (ClientProtocolException cpe) {
+            Log.e(TAG_, "ClientProtocolException:" + cpe.toString());
+            cpe.printStackTrace();
+        } catch (HttpHostConnectException hhce) {
+            Log.e(TAG_, "HttpHostConnectException:" + hhce.toString());
+            hhce.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.e(TAG_, "HttpHostConnectException:" + e.toString());
+            e.printStackTrace();
         } finally {
             httpclient.getConnectionManager().shutdown();
         }
