@@ -1,0 +1,44 @@
+-------- withings ---------
+API Key 9c7465cffb438c3b0e276114b5565372d2ce71f775cf5b5822498d9275df
+API Secret  429665c2c6ceb7e656de5032ce414e8293db24de50f14b0ceb43366cc00
+
+step2
+http://www.someyasdasd.com/?userid=4859718&oauth_token=2b44fd97c64824517642d9f5e9905f868107cb0929498052871c15bfb6381&oauth_verifier=rHIZF7qyZJeNL
+
+step3
+https://oauth.withings.com/account/access_token?oauth_consumer_key=9c7465cffb438c3b0e276114b5565372d2ce71f775cf5b5822498d9275df&oauth_nonce=3a7f1596867b317a7ea832c41f34a0eb&oauth_signature=nOBmOhsE5I0kmzRraPIK6APxOkw%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1413015765&oauth_token=2b44fd97c64824517642d9f5e9905f868107cb0929498052871c15bfb6381&oauth_version=1.0
+
+oauth_token=fd7939258ed6d869879fe01e7721d6c9458b07939457f45c208135dbbcd6e&oauth_token_secret=f990e6e65712cde1c3e2c85c96e4f98eeb274edb0cd33fb77d41e2d2cd7b&userid=4859718&deviceid=0
+
+step4
+
+http://wbsapi.withings.net/measure?action=getmeas&oauth_consumer_key=9c7465cffb438c3b0e276114b5565372d2ce71f775cf5b5822498d9275df&oauth_nonce=2e20998a42a70b7be43f77de46792c49&oauth_signature=sIqtd6EJt0WpUbjsRoJy0SHoeUc%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1413015810&oauth_token=fd7939258ed6d869879fe01e7721d6c9458b07939457f45c208135dbbcd6e&oauth_version=1.0&userid=4859718 
+
+
+-------- jawbone --------
+Client Id hHTmacWw_BY
+App Secret 439920ff70a6830a885674d749c8e40d10ff4672
+
+
+https://localhost/?code=iTxs5O8ZbaG1nmOP3okqltDmTjM8sOSQReH7HLsoBjXwS9olK6ZwjQahhP5X1RulUQJ2BGWj8ZQsyAZlLQS6bNlJFKJPK1kp5e3em0hDqIvq35w0EBzaWLr_yIKeSKqnxRx0Sty4SKUyDMQ7Y7j1MNMrXFMppebF5PJTR5thIV28OvUb0khgRg
+
+https://jawbone.com/auth/oauth2/token?&client_id=hHTmacWw_BY&client_secret=439920ff70a6830a885674d749c8e40d10ff4672&grant_type=authorization_code&code=iTxs5O8ZbaG1nmOP3okqltDmTjM8sOSQReH7HLsoBjXwS9olK6ZwjQahhP5X1RulUQJ2BGWj8ZQsyAZlLQS6bNlJFKJPK1kp5e3em0hDqIvq35w0EBzaWLr_yIKeSKqnxRx0Sty4SKUyDMQ7Y7j1MNMrXFMppebF5PJTR5thIV28OvUb0khgRg
+
+
+{"access_token": "b6_3pfGGwEhDbJDRzS8cJtpj72FdmizXtZ5jj96JKpYfRCU6KwEHQ6blI-dRctXd8EvaJSumcI0GoYT-V9UbpVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP", "token_type": "Bearer", "expires_in": 31536000, "refresh_token": "gkGL9TjxP67nGhVyftRa6bUHTcMG2SP42O0jT-fdwT3dL2WxNgQvKekaCy5aBtavNNWfJhnfRQwlAN2iCODyqw"}
+
+
+
+------- fitbit ------
+Client (Consumer) Key
+c897a4b04b754e5fb28c0a7c53fff41e
+Client (Consumer) Secret
+8a1401a65ce042bc89908472754c44e4
+
+oauth_token=53aca76c3f961bd0c20ee6c1e4a62ba3&oauth_token_secret=1e84004da66cf5689edaa12e42b4b06a&oauth_callback_confirmed=true
+
+
+oauth_token=53aca76c3f961bd0c20ee6c1e4a62ba3&oauth_verifier=mrmt8hs523cc3k290dt49u4jlb
+
+oauth_token=7eebc02685d9ee0bc683495bf1e8201c&oauth_token_secret=78b7dbe804c15003ee50473e5cb68b60&encoded_user_id=2VRHY3
+
