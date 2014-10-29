@@ -8,6 +8,7 @@ import com.ies.blelib.sensor.SensorDb;
 import com.ies.mysensortag.R.id;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -15,6 +16,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,6 +52,8 @@ public class DeviceActivity extends Activity {
     private ServiceListAdapter service_list_adapter_;
     private SensorListAdapter sensor_list_adapter_;
     private CkanReport reporter_;
+    private ProgressDialog dlg_progress_;
+    private Context context_;
     
     private static String status_ = STATUS_DISCONNECTED;
     
@@ -65,6 +69,8 @@ public class DeviceActivity extends Activity {
             finish();
         }
         ble_dev_ = getIntent().getExtras().getParcelable(BT_DEV_OBJ);
+
+        context_ = this;
         
         Log.d(TAG_, "Associate to bluetooth device: " + ble_dev_);
         ble_gatt_ = ble_dev_.connectGatt(this, true, gatt_callback_);
@@ -146,11 +152,22 @@ public class DeviceActivity extends Activity {
             
             if (msg.what == UI_EVENT_UPDATE_DEVICE) {
                 update_ui_detail_device_info();
+                
+                BluetoothGatt gatt = (BluetoothGatt)msg.obj;
+                gatt.discoverServices();
+                
+                dlg_progress_ = ProgressDialog.show(context_, 
+                        "Retrieve bluetooth services", 
+                        "Please waiting...");
             } else if (msg.what == UI_EVENT_UPDATE_RSSI) {
                 update_ui_detail_rssi(msg.arg1);
             } else if (msg.what == UI_EVENT_UPDATE_SERVICE) {
                 update_ui_detail_service();
                 update_ui_sensors();
+                
+                if (dlg_progress_ != null) {
+                    dlg_progress_.dismiss();
+                }
             } else if (msg.what == UI_EVENT_UPDATE_SENSOR_VALUE) {
                 sensor_list_adapter_.notifyDataSetChanged();
                 BleSensor sensor = (BleSensor)msg.obj;
@@ -236,17 +253,13 @@ public class DeviceActivity extends Activity {
                 //
                 Message msg = new Message();
                 msg.what = UI_EVENT_UPDATE_DEVICE;
+                msg.obj = gatt;
                 ui_event_handler_.sendMessage(msg);
 
                 //
                 // Start runnable for RSSI refreshing
                 //
                 rssi_refresh_runnable_.run();
-                
-                //
-                // Discovery the service
-                //
-                gatt.discoverServices();
                 
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 status_ = STATUS_DISCONNECTED;
