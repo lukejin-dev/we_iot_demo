@@ -8,7 +8,7 @@ import android.hardware.Sensor;
 import static android.bluetooth.BluetoothGattCharacteristic.FORMAT_SINT8;
 import static android.bluetooth.BluetoothGattCharacteristic.FORMAT_UINT8;
 
-public abstract class TiSensor extends BleSensor {
+public abstract class TiSensor<T> extends BleSensor<T> {
     //
     // See the http://processors.wiki.ti.com/index.php/SensorTag_User_Guide
     //

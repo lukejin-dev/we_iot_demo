@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import com.ies.blelib.service.*;
 
 
-public class TiHumiditySensor<Double> extends TiSensor {
+public class TiHumiditySensor extends TiSensor<Float> {
 
     public static final String UUID_SERVICE = 
             "f000aa20-0451-4000-b000-000000000000";

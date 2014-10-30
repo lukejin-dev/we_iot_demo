@@ -8,6 +8,7 @@ public class SensorDb {
     
     static {
         map.put(TiHumiditySensor.UUID_SERVICE, new TiHumiditySensor());
+        map.put(TiTemperatureSensor.UUID_SERVICE, new TiTemperatureSensor());
     }
     
     public static final BleSensor get(String uuid) {
