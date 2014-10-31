@@ -1,0 +1,37 @@
+/* ------------------------------------------------------------
+ *
+ * File        : about.css
+ *
+ * Description : Styles for the BLE Device Monitor About Dialog
+ *
+ * ----------------------------------------------------------- */
+body 
+{
+	padding:0;
+	background-color:white;
+}
+
+div.main 
+{
+	margin:0 auto;
+	padding:0;
+	color:#333;
+	text-align:justify;
+}
+
+p
+{
+	font-size:16px;
+}
+
+p.info
+{
+	text-align:center;
+	color:red;
+}
+
+p.copy
+{
+	text-align:center;
+	color:red;
+}

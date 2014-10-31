@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ti.sensortag"
+    android:versionCode="4"
+   	android:versionName="0.9.4" >
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".gui.devices.DevicesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="SensorTag" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".gui.services.ServicesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Services" 
+            android:parentActivityName=".gui.devices.DevicesActivity">
+        </activity>
+        
+        <activity
+            android:name=".gui.services.ServicesCardActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Services" 
+            android:parentActivityName=".gui.devices.DevicesActivity">
+        </activity>
+        
+        <activity
+            android:name=".gui.services.DeviceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Measurement" 
+            android:parentActivityName=".gui.devices.ServicesCardActivity">
+        </activity>
+        
+        
+        <activity
+            android:name=".gui.preferences.PreferencesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Preferences" 
+            android:parentActivityName=".gui.devices.DevicesActivity">
+        </activity>
+</application>
+
+</manifest>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SensorTag</string>
+
+    <color name="white_color">#fff</color>
+    <color name="gray_color">#aaa</color>
+
+    <string name="bt_not_supported">Bluetooth is not supported</string>
+    <string name="ble_not_supported">Bluetooth Le is not supported</string>
+
+    <!-- Options menu -->
+    <string name="fwupdate">Firmware update</string>
+    <string name="bt">Bluetooth Adapter</string>
+    <string name="sthome">SensorTag Home</string>
+    <string name="tie2e">TI E2E Community</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+
+</resources>

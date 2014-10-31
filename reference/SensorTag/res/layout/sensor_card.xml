@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="24dp" >
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/CardTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="title" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/stroke" />
+
+    <TextView
+        android:id="@+id/sensor"
+        style="@style/CardText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/accelerometer"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="x: 12 y:12 z:12"
+        android:textSize="22sp" />
+
+</LinearLayout>
