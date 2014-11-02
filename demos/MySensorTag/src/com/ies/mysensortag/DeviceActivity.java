@@ -82,6 +82,9 @@ public class DeviceActivity extends Activity {
         rssi_refresh_runnable_.run();
         
         reporter_ = new CkanReport();
+        dlg_progress_ = ProgressDialog.show(context_, 
+                "Connect to device", 
+                "Connecting bluetooth");        
     }
 
     public BluetoothGatt get_gatt() {
@@ -156,9 +159,13 @@ public class DeviceActivity extends Activity {
                 BluetoothGatt gatt = (BluetoothGatt)msg.obj;
                 gatt.discoverServices();
                 
+                if (dlg_progress_ != null) {
+                    dlg_progress_.dismiss();
+                    dlg_progress_ = null;
+                }
                 dlg_progress_ = ProgressDialog.show(context_, 
-                        "Retrieve bluetooth services", 
-                        "Please waiting...");
+                            "Connect to device", 
+                            "Retrieve bluetooth services");
             } else if (msg.what == UI_EVENT_UPDATE_RSSI) {
                 update_ui_detail_rssi(msg.arg1);
             } else if (msg.what == UI_EVENT_UPDATE_SERVICE) {
@@ -255,11 +262,6 @@ public class DeviceActivity extends Activity {
                 msg.what = UI_EVENT_UPDATE_DEVICE;
                 msg.obj = gatt;
                 ui_event_handler_.sendMessage(msg);
-
-                //
-                // Start runnable for RSSI refreshing
-                //
-                rssi_refresh_runnable_.run();
                 
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 status_ = STATUS_DISCONNECTED;
@@ -278,6 +280,11 @@ public class DeviceActivity extends Activity {
                 Message msg = new Message();
                 msg.what = UI_EVENT_UPDATE_SERVICE;
                 ui_event_handler_.sendMessage(msg);
+                
+                //
+                // Start runnable for RSSI refreshing
+                //
+                rssi_refresh_runnable_.run();                
             } else {
             }
         }        
