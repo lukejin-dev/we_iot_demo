@@ -1,5 +1,6 @@
 package com.ies.mysensortag;
 
+import com.ies.blelib.BleScaner;
 import com.ies.mysensortag.R;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ public class DeviceScanActivity extends Activity {
     private ListView listview_scan_;
     private DeviceScanListAdapter list_adapter_scan_;
     private Handler disappear_check_handler_;
+    private BleScaner ble_scaner_;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,7 @@ public class DeviceScanActivity extends Activity {
             startActivity(enableBtIntent);
         }
         
+        ble_scaner_ = new BleScaner();
         disappear_check_handler_ = new Handler();
     }
 
@@ -99,7 +102,7 @@ public class DeviceScanActivity extends Activity {
         // Start the scan on Resume. 
         //
         if (button_scan_switch_.isChecked()) {
-            ble_adapter_.startLeScan(scan_callback_);
+            ble_scaner_.startScan(scan_callback_, ble_adapter_);
             disappear_check_handler_.postDelayed(
                     disappear_check_runner_, DISAPPEAR_CHECK_INTERVAL_);
         } 
@@ -114,7 +117,7 @@ public class DeviceScanActivity extends Activity {
         //
         // Stop the scan on Pause.
         //
-        ble_adapter_.stopLeScan(scan_callback_);
+        ble_scaner_.stopLeScan(scan_callback_, ble_adapter_);
         list_adapter_scan_.clear();
     }
    
@@ -145,7 +148,7 @@ public class DeviceScanActivity extends Activity {
             }
             
             if (ble_adapter_.isEnabled()) {
-                ble_adapter_.startLeScan(scan_callback_);
+                ble_scaner_.startScan(scan_callback_, ble_adapter_);
                 disappear_check_handler_.postDelayed(
                         disappear_check_runner_, DISAPPEAR_CHECK_INTERVAL_);
             } else {
@@ -153,7 +156,7 @@ public class DeviceScanActivity extends Activity {
             }
         } else {
             Log.d(TAG_, "Scan button OFF");
-            ble_adapter_.stopLeScan(scan_callback_);
+            ble_scaner_.stopLeScan(scan_callback_, ble_adapter_);
             list_adapter_scan_.clear();
         }
     }
