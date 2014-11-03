@@ -1,0 +1,95 @@
+<html>
+<style>
+
+table{
+  font-size: 18px;
+  border-collapse:collapse;
+  }
+
+table,th, td{
+  border: 2px solid black;
+  }
+td,th{
+    padding: 0.5em 1em;
+}
+th{
+    font-weight: bold;
+}
+</style>
+<h1>API Reference</h1>
+<h2>Write Data<h2>
+    <table>
+    <tr>
+        <td>URL</td>
+        <td>http://xxx.xxx.xxx.xxx:8080/api/p2/write</td>
+    </tr>
+    <tr>
+        <td>Method</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Arguments</td>
+<td>
+<table>
+    <tr><th>Field Name</th><th>Type</th><th>Description</th></tr>
+    <tr><td>clientid</td><td>string <i>-Necessary</i></td><td>client id </td></tr>
+    <tr><td>content</td><td>string  <i>-Necessary</i></td><td>content json string(must be vaild json)</td></tr>            
+</table>
+</td>
+    </tr>
+     <tr>
+        <td>Expected Response</td>
+        <td>{"ok":1}</td>
+    </tr>
+</table>
+<h2>Read Data<h2>
+    <table>
+    <tr>
+        <td>URL</td>
+        <td>http://xxx.xxx.xxx.xxx:8080/api/p2/read</td>
+    </tr>
+    <tr>
+        <td>Method</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Arguments</td>
+<td>
+<table>
+    <tr><th>Field Name</th><th>Type</th><th>Description</th></tr>
+    <tr><td>clientid</td><td>string <i>-Optional</i></td><td>client id</td></tr>
+    <tr><td>time_after</td><td>int,unix_timestamp  <i>-Optional</i></td><td>query start time point</td></tr> 
+    <tr><td>time_before</td><td>int,unix_timestamp  <i>-Optional</i></td><td>query end time point</td></tr>      
+    <tr><td>limit</td><td>int <i>-Optional,Default=1000</i></td><td>works like LIMIT in SQL</td></tr>      
+</table>
+</td>
+    </tr>
+     <tr>
+        <td>Expected Response</td>
+        <td>json,contains query result</td>
+    </tr>
+</table>        
+
+
+
+<h2>Read the Latest 10 Items<h2>
+    <table>
+    <tr>
+        <td>URL</td>
+        <td>http://xxx.xxx.xxx.xxx:8080/api/p2/read_latest</td>
+    </tr>
+    <tr>
+        <td>Method</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Arguments</td>
+<td>
+None
+</td>
+    </tr>
+     <tr>
+        <td>Expected Response</td>
+        <td>json,contains query result</td>
+    </tr>
+</table>        
