@@ -22,6 +22,10 @@ public abstract class BleSensor<T> {
     public abstract String get_data_uuid();
     public abstract String get_configure_uuid();
     public abstract String get_value_string();
+    
+    public String get_period_uuid() {
+        return null;
+    }
     protected abstract T parse(BluetoothGattCharacteristic c);
     
     public String get_characteristic_name(String uuid) {
@@ -40,6 +44,10 @@ public abstract class BleSensor<T> {
     
     public byte[] get_raw_value() {
         return raw_data;
+    }
+    
+    public boolean onCharacteristicRead(BluetoothGattCharacteristic c) {
+        return false;
     }
     
     public void onCharacteristicChanged(BluetoothGattCharacteristic c) {
@@ -91,6 +99,9 @@ public abstract class BleSensor<T> {
     
     public byte[] get_config_values(boolean enable) {
         return new byte[] { (byte)(enable ? 1 : 0) };
+    }
+    
+    public void update(BluetoothGatt gatt) {
     }
     
     public void enable(BluetoothGatt gatt, boolean enable) {

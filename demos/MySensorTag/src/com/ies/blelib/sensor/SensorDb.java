@@ -9,6 +9,8 @@ public class SensorDb {
     static {
         map.put(TiHumiditySensor.UUID_SERVICE, new TiHumiditySensor());
         map.put(TiTemperatureSensor.UUID_SERVICE, new TiTemperatureSensor());
+        map.put(TiAccelerometerSensor.UUID_SERVICE, new TiAccelerometerSensor());
+        map.put(TiMagnetometerSensor.UUID_SERVICE, new TiMagnetometerSensor());
     }
     
     public static final BleSensor get(String uuid) {

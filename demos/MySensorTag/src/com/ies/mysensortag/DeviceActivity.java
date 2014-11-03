@@ -296,8 +296,12 @@ public class DeviceActivity extends Activity {
                 int status) {
             Log.i(TAG_, "onCharacteristicRead, status: " + status);
             
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-              
+            String service_id = characteristic.getService().getUuid().toString();
+            String char_id = characteristic.getUuid().toString();
+            
+            BleSensor sensor = sensor_list_adapter_.get_sensor(service_id);
+            if (sensor != null) {
+                sensor.onCharacteristicRead(characteristic);
             }
         }
         
