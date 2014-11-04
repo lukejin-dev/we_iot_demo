@@ -1,5 +1,8 @@
 package com.ies.blelib.sensor;
 
+import com.google.gson.Gson;
+import com.ies.blelib.sensor.TiHumiditySensor.HumidityValue;
+
 import android.bluetooth.BluetoothGattCharacteristic;
 import static java.lang.Math.pow;
 
@@ -90,4 +93,20 @@ public class TiTemperatureSensor extends TiSensor<float[]> {
 
         return tObj - 273.15;
     }
+    
+    public String get_json_string() {
+        float[] data = get_value();
+        
+        TemperatureValue v = new TemperatureValue();
+        v.ambient = data[0];
+        v.target = data[1];
+        
+        Gson gson = new Gson();
+        return gson.toJson(v);
+    }
+    
+    public class TemperatureValue {
+        public float ambient;
+        public float target;
+    }    
 }

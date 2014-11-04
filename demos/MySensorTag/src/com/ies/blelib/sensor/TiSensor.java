@@ -43,4 +43,6 @@ public abstract class TiSensor<T> extends BleSensor<T> {
 
         return (upperByte << 8) + lowerByte;
     }    
+    
+    public abstract String get_json_string();
 }

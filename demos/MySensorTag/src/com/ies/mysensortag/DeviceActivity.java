@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ies.blelib.sensor.BleSensor;
 import com.ies.blelib.sensor.SensorDb;
+import com.ies.blelib.sensor.TiSensor;
 import com.ies.mysensortag.R.id;
 
 import android.app.Activity;
@@ -177,11 +178,11 @@ public class DeviceActivity extends Activity {
                 }
             } else if (msg.what == UI_EVENT_UPDATE_SENSOR_VALUE) {
                 sensor_list_adapter_.notifyDataSetChanged();
-                BleSensor sensor = (BleSensor)msg.obj;
+                TiSensor sensor = (TiSensor)msg.obj;
                 reporter_.report_sensor_data(
                         ble_gatt_.getDevice().getAddress(),
                         sensor.get_service_uuid(),
-                        sensor.get_value_string());
+                        sensor.get_json_string());
             }
         }
     };

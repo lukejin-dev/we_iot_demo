@@ -10,12 +10,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.ckan.CKANException;
 
 import com.google.gson.Gson;
@@ -28,9 +31,9 @@ public class CkanReport {
     private final static String TAG_ = 
             CkanReport.class.getSimpleName();
     
-    private final static String DEFAULT_SERVER_ADDRESS = "202.121.178.242";
-    private final static int    DEFAULT_PORT = 80;
-    private final static String URL_PATH_ACTION = "/api/3/action/";
+    private final static String DEFAULT_SERVER_ADDRESS = "192.168.88.2:83";
+    private final static int    DEFAULT_PORT = 83;
+    private final static String URL_PATH_ACTION = "/api/p2/write";
     private final static String DEFAULT_API_KEY = "268016bf-92cd-48ca-8406-3ad2f1528c1b";
     private final static String DEFAULT_RESOURCE_ID = "519e34eb-920d-4215-a634-a47832e03cf6";
     
@@ -42,6 +45,7 @@ public class CkanReport {
     private Handler post_handler_;
     private String post_data_;
     private String resource_id_;
+    private String mac_;
     
     public CkanReport() {
         this(DEFAULT_SERVER_ADDRESS, DEFAULT_PORT, DEFAULT_API_KEY, DEFAULT_RESOURCE_ID);
@@ -56,6 +60,7 @@ public class CkanReport {
         post_handler_ = new Handler();
         post_data_ = null;
         resource_id_ = resource_id;
+        
     }
     
     private URL get_url(String path) {
@@ -74,24 +79,34 @@ public class CkanReport {
     }
     
     private URL get_datastore_upsert_url() {
-        return get_action_url("datastore_upsert");
+        return get_action_url("");
     }
  
     protected String post(URL url, String data) {
         String body = "";
         
         Log.i(TAG_, "api key: " + this.apikey_);
-        Log.i(TAG_, "url - " + url.toString() + "  data - " + data);
+        Log.i(TAG_, "url - " + url.toString() + "\n" +
+                "  clientid - " + mac_ +
+                "  data - " + data);
         
         HttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPost postRequest = new HttpPost(url.toString());
             postRequest.setHeader("X-CKAN-API-Key", this.apikey_);
-
+            
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("clientid", mac_));
+            nameValuePairs.add(new BasicNameValuePair("content", data));
+            
+            /**
             StringEntity input = new StringEntity(data);
+            
             input.setContentType("application/json");
             postRequest.setEntity(input);
-
+            **/
+            postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
             HttpResponse response = httpclient.execute(postRequest);
             int statusCode = response.getStatusLine().getStatusCode();
 
@@ -129,6 +144,7 @@ public class CkanReport {
             return;
         }
         
+        mac_ = mac;
         Gson gson = new Gson();
         
         SensorValueRecord r = new SensorValueRecord();
@@ -141,11 +157,15 @@ public class CkanReport {
         String records_json_str = gson.toJson(records);
         Log.i(TAG_, "records json string: " + records_json_str);
         
+        /**
         CkanDataStoreUpsertParam param = new CkanDataStoreUpsertParam();
         param.add_record(r);
         param.set_resource_id(resource_id_);
         
         post_data_ = gson.toJson(param);
+        **/
+        //post_data_= records_json_str;
+        post_data_ = value;
         
         ReportThread report_thread = new ReportThread();
         report_thread.start();
