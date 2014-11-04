@@ -135,11 +135,13 @@
     </TabHost>
 
     <ToggleButton
-        android:id="@+id/toggleButton1"
+        android:id="@+id/bt_report_server"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="0.9"
         android:textOn="@string/stop_report"
-        android:textOff="@string/start_report" />
+        android:textOff="@string/start_report"
+        android:onClick="onReportToggleClicked" 
+        />
     
 </LinearLayout>

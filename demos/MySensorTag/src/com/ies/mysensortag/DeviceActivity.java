@@ -10,6 +10,7 @@ import com.ies.mysensortag.R.id;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -18,15 +19,23 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class DeviceActivity extends Activity {
     
@@ -52,10 +61,10 @@ public class DeviceActivity extends Activity {
     private ListView listview_sensors_;
     private ServiceListAdapter service_list_adapter_;
     private SensorListAdapter sensor_list_adapter_;
-    private CkanReport reporter_;
+    private ServerReporter reporter_;
     private ProgressDialog dlg_progress_;
     private Context context_;
-    
+    private ToggleButton button_report_server_;
     private static String status_ = STATUS_DISCONNECTED;
     
     @Override
@@ -81,11 +90,18 @@ public class DeviceActivity extends Activity {
         }
         
         rssi_refresh_runnable_.run();
-        
-        reporter_ = new CkanReport();
+
+        SharedPreferences setting_preference = 
+                PreferenceManager.getDefaultSharedPreferences(this); 
+
+        reporter_ = new ServerReporter(
+                setting_preference.getString("report_server_url", ""));
         dlg_progress_ = ProgressDialog.show(context_, 
                 "Connect to device", 
-                "Connecting bluetooth");        
+                "Connecting bluetooth");
+        
+        button_report_server_ = (ToggleButton) 
+                findViewById(R.id.bt_report_server);
     }
 
     public BluetoothGatt get_gatt() {
@@ -179,10 +195,12 @@ public class DeviceActivity extends Activity {
             } else if (msg.what == UI_EVENT_UPDATE_SENSOR_VALUE) {
                 sensor_list_adapter_.notifyDataSetChanged();
                 TiSensor sensor = (TiSensor)msg.obj;
-                reporter_.report_sensor_data(
-                        ble_gatt_.getDevice().getAddress(),
-                        sensor.get_service_uuid(),
-                        sensor.get_json_string());
+                if (button_report_server_.isChecked()) {
+                    reporter_.report_sensor_data(
+                            ble_gatt_.getDevice().getAddress(),
+                            sensor.get_service_uuid(),
+                            sensor.get_json_string());
+                }
             }
         }
     };
@@ -350,5 +368,22 @@ public class DeviceActivity extends Activity {
         public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
             Log.i(TAG_, "onReliableWriteCompleted: " + status);
         }        
-    };    
+    };
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    public void onReportToggleClicked(View view) {
+        boolean on = button_report_server_.isChecked();
+        if (on) {
+            Log.d(TAG_, "Report button ON");
+        } else {
+            Log.d(TAG_, "Report button OFF");
+        }
+    }
+    
 }

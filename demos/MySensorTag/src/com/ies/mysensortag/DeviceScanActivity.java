@@ -26,7 +26,6 @@ public class DeviceScanActivity extends Activity {
     
     private final long DISAPPEAR_CHECK_INTERVAL_ = 1000;
     private ToggleButton button_scan_switch_;
-    private ToggleButton button_report_server_;
     private BluetoothAdapter ble_adapter_;
     private ListView listview_scan_;
     private DeviceScanListAdapter list_adapter_scan_;
@@ -117,8 +116,10 @@ public class DeviceScanActivity extends Activity {
         //
         // Stop the scan on Pause.
         //
-        ble_scaner_.stopLeScan(scan_callback_, ble_adapter_);
-        list_adapter_scan_.clear();
+        if (button_scan_switch_.isChecked()) {
+            ble_scaner_.stopLeScan(scan_callback_, ble_adapter_);
+            list_adapter_scan_.clear();
+        }
     }
    
     final Runnable disappear_check_runner_ = new Runnable() {
@@ -161,15 +162,6 @@ public class DeviceScanActivity extends Activity {
         }
     }
 
-    public void onReportToggleClicked(View view) {
-        boolean on = button_report_server_.isChecked();
-        if (on) {
-            Log.d(TAG_, "Report button ON");
-        } else {
-            Log.d(TAG_, "Report button OFF");
-        }
-    }
-    
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback scan_callback_ =
             new BluetoothAdapter.LeScanCallback() {
@@ -200,8 +192,12 @@ public class DeviceScanActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClass(this, SettingPreferenceActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    
 }

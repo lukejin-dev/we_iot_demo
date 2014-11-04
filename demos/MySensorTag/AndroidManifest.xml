@@ -27,6 +27,7 @@
         </activity>
 
         <activity android:name=".DeviceActivity" />
+        <activity android:name=".SettingPreferenceActivity" />
         <activity android:name=".DeviceTabDetailActivity" />
         <activity android:name=".DeviceTabSensorActivity" />
     </application>

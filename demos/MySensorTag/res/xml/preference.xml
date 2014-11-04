@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <EditTextPreference
+        android:key="report_server_url"
+        android:title="Configure Server URL"
+        android:defaultValue="http://192.168.88.2:83/api/p2/write"
+        android:persistent="true"
+        >
+    </EditTextPreference>
+</PreferenceScreen>
