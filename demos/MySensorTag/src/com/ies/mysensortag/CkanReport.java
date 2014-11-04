@@ -19,7 +19,6 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.ckan.CKANException;
 
 import com.google.gson.Gson;
 
