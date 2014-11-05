@@ -19,8 +19,16 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import com.google.gson.Gson;
+import com.ies.blelib.sensor.TiAccelerometerSensor;
+import com.ies.blelib.sensor.TiHumiditySensor;
+import com.ies.blelib.sensor.TiMagnetometerSensor;
+import com.ies.blelib.sensor.TiSensor;
+import com.ies.blelib.sensor.TiTemperatureSensor;
 
 import android.os.Handler;
 import android.util.Log;
@@ -38,6 +46,8 @@ public class ServerReporter {
     private String server_address_;
     private String post_data_;
     private String mac_;
+    private SensorValues sensor_values_;
+    private int server_errors_;
     
     public ServerReporter() {
         this(DEFAULT_SERVER_ADDRESS);
@@ -52,6 +62,7 @@ public class ServerReporter {
         is_transferring_ = false;
         last_report_time_ = new Date();   
         post_data_ = null;
+        server_errors_ = 0;
     }
     
     private URL get_url() {
@@ -72,8 +83,12 @@ public class ServerReporter {
         Log.i(TAG_, "url - " + url.toString() + "\n" +
                 "  clientid - " + mac_ +
                 "  data - " + data);
+       
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(params, 3000);
+        HttpConnectionParams.setSoTimeout(params, 3000);            
+        HttpClient httpclient = new DefaultHttpClient(params);
         
-        HttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPost postRequest = new HttpPost(url.toString());
             
@@ -85,49 +100,82 @@ public class ServerReporter {
             
             HttpResponse response = httpclient.execute(postRequest);
             int statusCode = response.getStatusLine().getStatusCode();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (response.getEntity().getContent())));
-
             String line = "";
             while ((line = br.readLine()) != null) {
                 body += line;
             }
-            
             Log.i(TAG_, "response: " + body);
+            
+            server_errors_ = 0;
         } catch (ClientProtocolException cpe) {
             Log.e(TAG_, "ClientProtocolException:" + cpe.toString());
             cpe.printStackTrace();
+            server_errors_ ++;
         } catch (HttpHostConnectException hhce) {
             Log.e(TAG_, "HttpHostConnectException:" + hhce.toString());
             hhce.printStackTrace();
+            server_errors_ ++;
         } catch (IOException e) {
             Log.e(TAG_, "HttpHostConnectException:" + e.toString());
             e.printStackTrace();
+            server_errors_ ++;
+        } catch (Exception e) { 
+            e.printStackTrace();
+            server_errors_ ++;
         } finally {
             httpclient.getConnectionManager().shutdown();
         }
         
+        Log.v(TAG_, "post done.");
         return body;
     }
 
+    public int get_server_errors() {
+        return server_errors_;
+    }
     
-    public void report_sensor_data(String mac, String id, String value) {
+    public void report_sensor_data(TiSensor sensor, String mac, String id, 
+            String value) {
+        if (sensor_values_ == null) {
+            sensor_values_ = new SensorValues();
+        }
+        if (sensor instanceof TiAccelerometerSensor) {
+            float[] data = (float[])sensor.get_value();
+            sensor_values_.a_x = data[0];
+            sensor_values_.a_y = data[1];
+            sensor_values_.a_z = data[2];
+        } else if (sensor instanceof TiHumiditySensor) {
+            Float data = (Float)sensor.get_value();
+            sensor_values_.humidity = data;
+        } else if (sensor instanceof TiMagnetometerSensor) {
+            float[] data = (float[])sensor.get_value();
+            sensor_values_.m_x = data[0];
+            sensor_values_.m_y = data[1];
+            sensor_values_.m_z = data[2];            
+        } else if (sensor instanceof TiTemperatureSensor) {
+            float[] data = (float[])sensor.get_value();
+            sensor_values_.ambient = data[0];
+            sensor_values_.target = data[1];
+        } else {
+            Log.e(TAG_, "Unknown sensor type");
+        }
+        
         if (is_too_fast() || is_transferring_) {
-            //
-            // Just ignore if the sending interval is too fast.
-            //
             return;
         }
         
         mac_ = mac;
         Gson gson = new Gson();
         
-        post_data_ = value;
+        post_data_ = gson.toJson(sensor_values_);;
+        
+        last_report_time_ = new Date();
         
         ReportThread report_thread = new ReportThread();
         report_thread.start();
-        last_report_time_ = new Date();
+        
         
     }
     
@@ -135,7 +183,9 @@ public class ServerReporter {
         Date now = new Date();
         long diff_seconds = 
                 (now.getTime() - last_report_time_.getTime()) / 1000;
+        Log.v(TAG_, "diff seconds: " + diff_seconds);
         if (diff_seconds < 2) {
+            Log.w(TAG_, "too fast");
             return true;
         }
         return false;
@@ -144,10 +194,30 @@ public class ServerReporter {
     public class ReportThread extends Thread {
         public void run() {
             is_transferring_ = true;
-            Log.i(TAG_, "start post...");
-            post(get_url(), post_data_);
-            Log.i(TAG_, "End post...");
+            try {
+                Log.i(TAG_, "start post...");
+                post(get_url(), post_data_);
+                Log.i(TAG_, "End post...");
+            } catch (Exception e) {
+                
+            }
             is_transferring_ = false;
+            sensor_values_ = null;
         }
+    }
+    
+    class SensorValues {
+        public float a_x;
+        public float a_y;
+        public float a_z;
+        
+        public float humidity;
+        
+        public float m_x;
+        public float m_y;
+        public float m_z;
+        
+        public float ambient;
+        public float target;        
     }
 }

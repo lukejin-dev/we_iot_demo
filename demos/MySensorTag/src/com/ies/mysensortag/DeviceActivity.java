@@ -66,6 +66,7 @@ public class DeviceActivity extends Activity {
     private Context context_;
     private ToggleButton button_report_server_;
     private static String status_ = STATUS_DISCONNECTED;
+    private TextView textview_server_errors_;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,9 @@ public class DeviceActivity extends Activity {
         
         button_report_server_ = (ToggleButton) 
                 findViewById(R.id.bt_report_server);
+        
+        textview_server_errors_ = (TextView)
+                findViewById(R.id.textview_server_errors);
     }
 
     public BluetoothGatt get_gatt() {
@@ -197,9 +201,11 @@ public class DeviceActivity extends Activity {
                 TiSensor sensor = (TiSensor)msg.obj;
                 if (button_report_server_.isChecked()) {
                     reporter_.report_sensor_data(
+                            sensor,
                             ble_gatt_.getDevice().getAddress(),
                             sensor.get_service_uuid(),
                             sensor.get_json_string());
+                    set_server_errors(reporter_.get_server_errors());
                 }
             }
         }
@@ -384,6 +390,11 @@ public class DeviceActivity extends Activity {
         } else {
             Log.d(TAG_, "Report button OFF");
         }
+    }
+    
+    public void set_server_errors(int count) {
+        String message = "Server Errors: " + count;
+        this.textview_server_errors_.setText(message);
     }
     
 }
