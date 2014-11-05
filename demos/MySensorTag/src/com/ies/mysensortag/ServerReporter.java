@@ -138,28 +138,33 @@ public class ServerReporter {
     
     public void report_sensor_data(TiSensor sensor, String mac, String id, 
             String value) {
-        if (sensor_values_ == null) {
-            sensor_values_ = new SensorValues();
-        }
-        if (sensor instanceof TiAccelerometerSensor) {
-            float[] data = (float[])sensor.get_value();
-            sensor_values_.a_x = Float.toString(data[0]);
-            sensor_values_.a_y = Float.toString(data[1]);
-            sensor_values_.a_z = Float.toString(data[2]);
-        } else if (sensor instanceof TiHumiditySensor) {
-            Float data = (Float)sensor.get_value();
-            sensor_values_.humidity = Float.toString(data);
-        } else if (sensor instanceof TiMagnetometerSensor) {
-            float[] data = (float[])sensor.get_value();
-            sensor_values_.m_x = Float.toString(data[0]);
-            sensor_values_.m_y = Float.toString(data[1]);
-            sensor_values_.m_z = Float.toString(data[2]);            
-        } else if (sensor instanceof TiTemperatureSensor) {
-            float[] data = (float[])sensor.get_value();
-            sensor_values_.ambient = Float.toString(data[0]);
-            sensor_values_.target = Float.toString(data[1]);
-        } else {
-            Log.e(TAG_, "Unknown sensor type");
+        try {
+            if (sensor_values_ == null) {
+                sensor_values_ = new SensorValues();
+            }
+            if (sensor instanceof TiAccelerometerSensor) {
+                float[] data = (float[])sensor.get_value();
+                sensor_values_.a_x = Float.toString(data[0]);
+                sensor_values_.a_y = Float.toString(data[1]);
+                sensor_values_.a_z = Float.toString(data[2]);
+            } else if (sensor instanceof TiHumiditySensor) {
+                Float data = (Float)sensor.get_value();
+                sensor_values_.humidity = Float.toString(data);
+            } else if (sensor instanceof TiMagnetometerSensor) {
+                float[] data = (float[])sensor.get_value();
+                sensor_values_.m_x = Float.toString(data[0]);
+                sensor_values_.m_y = Float.toString(data[1]);
+                sensor_values_.m_z = Float.toString(data[2]);            
+            } else if (sensor instanceof TiTemperatureSensor) {
+                float[] data = (float[])sensor.get_value();
+                sensor_values_.ambient = Float.toString(data[0]);
+                sensor_values_.target = Float.toString(data[1]);
+            } else {
+                Log.e(TAG_, "Unknown sensor type");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
         
         if (is_too_fast() || is_transferring_) {
