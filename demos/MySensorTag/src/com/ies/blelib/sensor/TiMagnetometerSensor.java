@@ -1,7 +1,6 @@
 package com.ies.blelib.sensor;
 
 import com.google.gson.Gson;
-import com.ies.blelib.sensor.TiAccelerometerSensor.AccelerometerValue;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -65,26 +64,4 @@ public class TiMagnetometerSensor extends TiSensor<float[]> {
     public void update(BluetoothGatt gatt) {
         gatt_char_write(gatt, UUID_PERIOD, new byte[]{(byte) period_});
     }
-    
-    public String get_json_string() {
-        float[] data = get_value();
-        if (data == null) {
-            return null;
-        }
-        
-        MagnetometerValue v = new MagnetometerValue();
-        v.m_x = data[0];
-        v.m_y = data[1];
-        v.m_z = data[2];
-        
-        Gson gson = new Gson();
-        return gson.toJson(v);
-    }
-    
-    public class MagnetometerValue {
-        public float m_x;
-        public float m_y;
-        public float m_z;
-    }    
-    
 }

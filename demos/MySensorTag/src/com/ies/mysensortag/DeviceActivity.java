@@ -203,8 +203,7 @@ public class DeviceActivity extends Activity {
                     reporter_.report_sensor_data(
                             sensor,
                             ble_gatt_.getDevice().getAddress(),
-                            sensor.get_service_uuid(),
-                            sensor.get_json_string());
+                            sensor.get_service_uuid());
                     set_server_errors(reporter_.get_server_errors());
                 }
             }

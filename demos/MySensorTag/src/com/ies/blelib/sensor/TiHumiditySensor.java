@@ -3,7 +3,6 @@ package com.ies.blelib.sensor;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.google.gson.Gson;
-import com.ies.blelib.sensor.TiAccelerometerSensor.AccelerometerValue;
 import com.ies.blelib.service.*;
 
 
@@ -50,19 +49,5 @@ public class TiHumiditySensor extends TiSensor<Float> {
     
     public String get_value_string() {
        return "" + get_value();
-    }
-    
-    public String get_json_string() {
-        float data = get_value();
-        
-        HumidityValue v = new HumidityValue();
-        v.humidity = data;
-        
-        Gson gson = new Gson();
-        return gson.toJson(v);
-    }
-    
-    public class HumidityValue {
-        public float humidity;
     }
 }

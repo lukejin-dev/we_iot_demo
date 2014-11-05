@@ -136,8 +136,7 @@ public class ServerReporter {
         return server_errors_;
     }
     
-    public void report_sensor_data(TiSensor sensor, String mac, String id, 
-            String value) {
+    public void report_sensor_data(TiSensor sensor, String mac, String id) {
         try {
             if (sensor_values_ == null) {
                 sensor_values_ = new SensorValues();

@@ -126,25 +126,4 @@ public class TiAccelerometerSensor extends TiSensor<float[]> {
         setPeriod(100);
         update(gatt);
     }
-    
-    public String get_json_string() {
-        float[] data = get_value();
-        if (data == null) {
-            return null;
-        }
-        
-        AccelerometerValue v = new AccelerometerValue();
-        v.a_x = data[0];
-        v.a_y = data[1];
-        v.a_z = data[2];
-        
-        Gson gson = new Gson();
-        return gson.toJson(v);
-    }
-    
-    public class AccelerometerValue {
-        public float a_x;
-        public float a_y;
-        public float a_z;
-    }
 }
