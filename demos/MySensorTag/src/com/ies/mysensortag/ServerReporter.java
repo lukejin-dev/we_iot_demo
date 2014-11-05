@@ -143,21 +143,21 @@ public class ServerReporter {
         }
         if (sensor instanceof TiAccelerometerSensor) {
             float[] data = (float[])sensor.get_value();
-            sensor_values_.a_x = data[0];
-            sensor_values_.a_y = data[1];
-            sensor_values_.a_z = data[2];
+            sensor_values_.a_x = Float.toString(data[0]);
+            sensor_values_.a_y = Float.toString(data[1]);
+            sensor_values_.a_z = Float.toString(data[2]);
         } else if (sensor instanceof TiHumiditySensor) {
             Float data = (Float)sensor.get_value();
-            sensor_values_.humidity = data;
+            sensor_values_.humidity = Float.toString(data);
         } else if (sensor instanceof TiMagnetometerSensor) {
             float[] data = (float[])sensor.get_value();
-            sensor_values_.m_x = data[0];
-            sensor_values_.m_y = data[1];
-            sensor_values_.m_z = data[2];            
+            sensor_values_.m_x = Float.toString(data[0]);
+            sensor_values_.m_y = Float.toString(data[1]);
+            sensor_values_.m_z = Float.toString(data[2]);            
         } else if (sensor instanceof TiTemperatureSensor) {
             float[] data = (float[])sensor.get_value();
-            sensor_values_.ambient = data[0];
-            sensor_values_.target = data[1];
+            sensor_values_.ambient = Float.toString(data[0]);
+            sensor_values_.target = Float.toString(data[1]);
         } else {
             Log.e(TAG_, "Unknown sensor type");
         }
@@ -171,8 +171,6 @@ public class ServerReporter {
         
         post_data_ = gson.toJson(sensor_values_);;
         
-        last_report_time_ = new Date();
-        
         ReportThread report_thread = new ReportThread();
         report_thread.start();
         
@@ -184,7 +182,7 @@ public class ServerReporter {
         long diff_seconds = 
                 (now.getTime() - last_report_time_.getTime()) / 1000;
         Log.v(TAG_, "diff seconds: " + diff_seconds);
-        if (diff_seconds < 2) {
+        if (diff_seconds < 1) {
             Log.w(TAG_, "too fast");
             return true;
         }
@@ -201,23 +199,25 @@ public class ServerReporter {
             } catch (Exception e) {
                 
             }
+            
+            last_report_time_ = new Date();
             is_transferring_ = false;
             sensor_values_ = null;
         }
     }
     
     class SensorValues {
-        public float a_x;
-        public float a_y;
-        public float a_z;
+        public String a_x;
+        public String a_y;
+        public String a_z;
         
-        public float humidity;
+        public String humidity;
         
-        public float m_x;
-        public float m_y;
-        public float m_z;
+        public String m_x;
+        public String m_y;
+        public String m_z;
         
-        public float ambient;
-        public float target;        
+        public String ambient;
+        public String target;        
     }
 }
