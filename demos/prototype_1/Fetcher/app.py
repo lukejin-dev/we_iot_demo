@@ -39,7 +39,7 @@ def withings(day):
     
     wt_con.url="https://wbsapi.withings.net/v2/measure"
     wt_con.params={"action":"getactivity","date":day["date"]}
-    json_obj = json.loads(wt_con.get())    
+    json_obj = json.loads(wt_con.get())
     if(json_obj["body"].has_key("steps")):
         result["steps"]=json_obj["body"]["steps"]#Number of steps for the day.
         result["elevation"]=json_obj["body"]["elevation"]#Distance travelled for the day (in meters).
@@ -53,7 +53,6 @@ def withings(day):
     wt_con.url="https://wbsapi.withings.net/v2/sleep"
     wt_con.params={"action":"get","startdate":str(day["start"]-43200),"enddate":str(day["end"]-43200)}#43200 = 12 hours. 
     json_obj = json.loads(wt_con.get())
-    print json_obj
     if(json_obj["body"].has_key("series")):
         result["sleep_series"]=json_obj["body"]["series"]#Serie of sleep data  0-awake  1-light sleep  2-deep sleep 3-REM sleep
         result["awake"]=0;
@@ -74,7 +73,6 @@ def withings(day):
     wt_con.url="https://wbsapi.withings.net/measure"
     wt_con.params={"action":"getmeas","startdate":str(day["start"]),"enddate":str(day["end"]),"category":"1"}
     json_obj = json.loads(wt_con.get())
-    print json_obj
     for grp in json_obj["body"]["measuregrps"]:
         for item in grp["measures"]:
             if(item["type"]==1 and not result.has_key("weight")):
@@ -94,12 +92,11 @@ def withings(day):
     return result
 
 def fitbit(day):
-    return {}
     result={}
     fb_con=oauth_connection(FB_CONFIGURE)
     
     fb_con.url="https://api.fitbit.com/1/user/-/sleep/date/"+day["date"]+".json"
-    json_obj = json.loads(fb_con.get())    
+    json_obj = json.loads(fb_con.get())
     result["totalMinutesAsleep"] = json_obj["summary"]["totalMinutesAsleep"]
     result["totalTimeInBed"] = json_obj["summary"]["totalTimeInBed"]
     result["totalSleepRecords"] = json_obj["summary"]["totalSleepRecords"]
@@ -130,7 +127,6 @@ def fitbit(day):
     return result
     
 def jawbone(day):
-    return {}
     result={}
     jb_con=oauth_connection(JB_CONFIGURE)
     

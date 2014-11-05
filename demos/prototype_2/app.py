@@ -4,7 +4,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 import json
 import sqlite3
-from flask import Flask
+from flask import Flask,redirect
 from flask.ext.restful import reqparse, abort, Api, Resource
 from flask.ext.restful.utils import cors
 from flask.ext.restful.representations.json import output_json
@@ -69,13 +69,13 @@ class p2Handler(Resource):
                   'Access-Control-Allow-Methods' : 'POST,GET' }
 
     def post(self, action):
-        print "new connection" 
         if action == "write":
             args = p2_parser.parse_args()  
             if not (args["clientid"] and args["content"]):
                 return {'error':"params missing."},401
+            print "\n -ClientID: "+args["clientid"]
+            print " -Content: "+args["content"]
             json_obj=json.loads(args["content"])
-            #print args["clientid"],json_obj
             db = sqlite3.connect("./RT_Server.db")
             cu = db.cursor()  
             cu.execute("CREATE TABLE IF NOT EXISTS realtime(id INTEGER PRIMARY KEY AUTOINCREMENT,clientid varchar(50) NOT NULL,content NTEXT,time INTEGER NOT NULL)")
@@ -104,7 +104,7 @@ api.add_resource(p2Handler, '/api/p2/<string:action>')
 #static file for front end
 @app.route("/")
 def index():
-    return app.send_static_file('index.html')
+    return redirect("/static/index.html")
     
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=8080, threaded=True)
+    app.run(host='0.0.0.0',port=83, threaded=True)
