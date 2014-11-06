@@ -46,7 +46,7 @@ public class ServerReporter {
     private String server_address_;
     private String post_data_;
     private String mac_;
-    private SensorValues sensor_values_;
+    private List<SensorValues> value_list_;
     private int server_errors_;
     
     public ServerReporter() {
@@ -63,6 +63,7 @@ public class ServerReporter {
         last_report_time_ = new Date();   
         post_data_ = null;
         server_errors_ = 0;
+        value_list_ = new ArrayList<SensorValues>();
     }
     
     private URL get_url() {
@@ -138,29 +139,28 @@ public class ServerReporter {
     
     public void report_sensor_data(TiSensor sensor, String mac, String id) {
         try {
-            if (sensor_values_ == null) {
-                sensor_values_ = new SensorValues();
-            }
+            SensorValues sensor_values = new SensorValues();
             if (sensor instanceof TiAccelerometerSensor) {
                 float[] data = (float[])sensor.get_value();
-                sensor_values_.a_x = Float.toString(data[0]);
-                sensor_values_.a_y = Float.toString(data[1]);
-                sensor_values_.a_z = Float.toString(data[2]);
+                sensor_values.a_x = Float.toString(data[0]);
+                sensor_values.a_y = Float.toString(data[1]);
+                sensor_values.a_z = Float.toString(data[2]);
             } else if (sensor instanceof TiHumiditySensor) {
                 Float data = (Float)sensor.get_value();
-                sensor_values_.humidity = Float.toString(data);
+                sensor_values.humidity = Float.toString(data);
             } else if (sensor instanceof TiMagnetometerSensor) {
                 float[] data = (float[])sensor.get_value();
-                sensor_values_.m_x = Float.toString(data[0]);
-                sensor_values_.m_y = Float.toString(data[1]);
-                sensor_values_.m_z = Float.toString(data[2]);            
+                sensor_values.m_x = Float.toString(data[0]);
+                sensor_values.m_y = Float.toString(data[1]);
+                sensor_values.m_z = Float.toString(data[2]);            
             } else if (sensor instanceof TiTemperatureSensor) {
                 float[] data = (float[])sensor.get_value();
-                sensor_values_.ambient = Float.toString(data[0]);
-                sensor_values_.target = Float.toString(data[1]);
+                sensor_values.ambient = Float.toString(data[0]);
+                sensor_values.target = Float.toString(data[1]);
             } else {
                 Log.e(TAG_, "Unknown sensor type");
             }
+            value_list_.add(sensor_values);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -173,7 +173,7 @@ public class ServerReporter {
         mac_ = mac;
         Gson gson = new Gson();
         
-        post_data_ = gson.toJson(sensor_values_);;
+        post_data_ = gson.toJson(value_list_);;
         
         ReportThread report_thread = new ReportThread();
         report_thread.start();
@@ -204,9 +204,9 @@ public class ServerReporter {
                 
             }
             
+            value_list_.clear();
             last_report_time_ = new Date();
             is_transferring_ = false;
-            sensor_values_ = null;
         }
     }
     
