@@ -14,7 +14,7 @@ public class TiMagnetometerSensor extends TiSensor<float[]> {
     private static final int PERIOD_MIN = 10;
     private static final int PERIOD_MAX = 255;
 
-    private int period_ = 100;
+    private int period_ = PERIOD_MIN;
     
     @Override
     public String get_name() {
@@ -60,8 +60,26 @@ public class TiMagnetometerSensor extends TiSensor<float[]> {
         return new float[]{x, y, z};
     }
     
+    public void setPeriod(int period) {
+        period_ = period;
+    }
+    
     @Override
     public void update(BluetoothGatt gatt) {
         gatt_char_write(gatt, UUID_PERIOD, new byte[]{(byte) period_});
     }
+    
+    @Override
+    public void enable(BluetoothGatt gatt, boolean enable) {
+        super.enable(gatt, enable);
+        
+        try {
+            Thread.sleep(500);
+        } catch (Exception e) {
+            
+        }
+        
+        setPeriod(50);
+        update(gatt);
+    }    
 }

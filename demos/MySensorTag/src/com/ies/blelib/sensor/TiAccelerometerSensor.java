@@ -20,7 +20,7 @@ public class TiAccelerometerSensor extends TiSensor<float[]> {
     private static final int PERIOD_MIN = 10;
     private static final int PERIOD_MAX = 255;
 
-    private int period_ = 100;
+    private int period_ = PERIOD_MIN;
     
     @Override
     public String get_name() {
@@ -123,7 +123,7 @@ public class TiAccelerometerSensor extends TiSensor<float[]> {
             
         }
         
-        setPeriod(100);
+        setPeriod(50);
         update(gatt);
     }
 }

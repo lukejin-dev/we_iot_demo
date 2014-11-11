@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -106,6 +107,7 @@ public class DeviceActivity extends Activity {
         
         textview_server_errors_ = (TextView)
                 findViewById(R.id.textview_server_errors);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public BluetoothGatt get_gatt() {

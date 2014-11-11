@@ -184,9 +184,9 @@ public class ServerReporter {
     private boolean is_too_fast() {
         Date now = new Date();
         long diff_seconds = 
-                (now.getTime() - last_report_time_.getTime()) / 1000;
+                (now.getTime() - last_report_time_.getTime());
         Log.v(TAG_, "diff seconds: " + diff_seconds);
-        if (diff_seconds < 1) {
+        if (diff_seconds < 500) {
             Log.w(TAG_, "too fast");
             return true;
         }
