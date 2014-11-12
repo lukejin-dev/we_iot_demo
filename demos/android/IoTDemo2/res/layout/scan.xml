@@ -5,9 +5,10 @@
     android:orientation="vertical" >
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/lv_scan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" 
+        android:cacheColorHint="#FFDAFF7F">
     </ListView>
 
 </LinearLayout>
