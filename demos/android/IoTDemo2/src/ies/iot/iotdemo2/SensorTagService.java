@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import ies.iot.demolib.ble.*;
+import ies.iot.demolib.utils.DemoSettings;
 
 public class SensorTagService extends Service {
     private final String TAG = getClass().getSimpleName();
@@ -31,6 +32,11 @@ public class SensorTagService extends Service {
             .setOngoing(true);
         
         setNotification("Service is starting");
+        
+        String address = DemoSettings.getInstance().getDeviceAddress(this);
+        if (address != null) {
+            startBle(address);
+        }
     }
     
     @Override
@@ -84,6 +90,8 @@ public class SensorTagService extends Service {
             } else if (state == BleManager.STATE_CONNECTING) {
                 setNotification("BLE connecting");
             } else if (state == BleManager.STATE_CONNECTED) {
+                mBleManager.discoveryService();
+            } else if (state == BleManager.STATE_DISCOVERIED) {
                 setNotification("BLE connected");
             }
         }
@@ -106,6 +114,12 @@ public class SensorTagService extends Service {
         }
         
         return mBleManager.connectBle(address);
+    }
+    
+    public void stopBle() {
+        mBleManager.disconnectBle();
+        DemoSettings.getInstance().setDeviceAddress(this, "");
+        DemoSettings.getInstance().setDeviceName(this, "");
     }
    
 }

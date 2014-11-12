@@ -28,6 +28,7 @@ public class DashboardActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
         setContentView(R.layout.dashboard);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
@@ -55,6 +56,7 @@ public class DashboardActivity extends Activity {
     
     public void onButtonStopClicked(View view) {
         Log.v(TAG, "onButtonClickStop");
+        mService.stopBle();
         backToScan();
     }
     
@@ -84,6 +86,7 @@ public class DashboardActivity extends Activity {
             SensorTagService.SensorTagServiceBinder b = 
                     (SensorTagService.SensorTagServiceBinder)binder;
             mService = b.getService();
+            mService.startBle(mDeviceAddress);
         }
 
         @Override

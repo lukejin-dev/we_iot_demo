@@ -153,6 +153,9 @@ public class ScanListAdapter extends BaseAdapter {
                     .show();
                 return;
             }
+            
+            ((ScanActivity)context_).getService().getBleManager().stopScan();
+            
             DemoSettings.getInstance().setDeviceName(context_,
                     bsi.get_name());
             DemoSettings.getInstance().setDeviceAddress(context_, 

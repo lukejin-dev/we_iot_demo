@@ -78,6 +78,7 @@ public class BleManager {
     };    
     
     public boolean startScan(Handler callbackHandler) {
+        Log.v(TAG, "startScan");
         if (!enableBle()) return false;
         assert(mBleAdapter != null);
         
@@ -90,6 +91,7 @@ public class BleManager {
     }
     
     public void stopScan() {
+        Log.v(TAG, "stopScan");
         if (mState != STATE_SCANNING) {
             return;
         }
@@ -114,6 +116,7 @@ public class BleManager {
     }
     
     public boolean connectBle(String address) {
+        Log.v(TAG, "connectBle");
         if (!enableBle()) return false;
         assert(mBleAdapter != null);
         
@@ -145,10 +148,16 @@ public class BleManager {
     }
     
     public void disconnectBle() {
+        Log.v(TAG, "disconnectBle");
         mBleGatt.disconnect();
         mDeviceAddress = null;
         mBleDevice = null;
         mBleGatt = null;
+    }
+    
+    public void discoveryService() {
+        Log.v(TAG, "discoveryService");
+        mBleGatt.discoverServices();
     }
     
     public boolean isConnected() {
@@ -165,7 +174,17 @@ public class BleManager {
                     newState);
             
             if(newState == BluetoothProfile.STATE_CONNECTED){
+                mState = STATE_CONNECTED;
+                
+                Message msg = new Message();
+                msg.what = STATE_CONNECTED;
+                mStateHandler.sendMessage(msg);
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
+                mState = STATE_DISCONNECTED;
+                
+                Message msg = new Message();
+                msg.what = STATE_DISCONNECTED;
+                mStateHandler.sendMessage(msg);
             }
         }
 
@@ -174,6 +193,9 @@ public class BleManager {
             Log.i(TAG, "onServicesDiscovered, status: " + status);
             
             if(status == BluetoothGatt.GATT_SUCCESS) {
+                Message msg = new Message();
+                msg.what = STATE_DISCOVERIED;
+                mStateHandler.sendMessage(msg);                
             } else {
             }
         }        

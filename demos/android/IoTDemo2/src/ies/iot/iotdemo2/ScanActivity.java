@@ -44,10 +44,16 @@ public class ScanActivity extends Activity {
     }
     
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop");
+        disconnectService();
+    }
+    
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDisappearCheckHandler.removeCallbacks(mDisappearCheckRunner);
-        disconnectService();
+        Log.v(TAG, "onDestroy");
     }
     
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -79,7 +85,12 @@ public class ScanActivity extends Activity {
     }
     
     public void disconnectService() {
+        mService.getBleManager().stopScan();
         unbindService(mConnection);
+    }
+    
+    public SensorTagService getService() {
+        return mService;
     }
     
     private Handler mScanCallbackHandler = new Handler() {
