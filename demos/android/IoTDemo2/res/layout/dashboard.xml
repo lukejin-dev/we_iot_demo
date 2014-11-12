@@ -30,6 +30,7 @@
         android:id="@+id/bt_stop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Stop and Rescan" />
+        android:text="Stop and Rescan"
+        android:onClick="onButtonStopClicked" />
 
 </LinearLayout>

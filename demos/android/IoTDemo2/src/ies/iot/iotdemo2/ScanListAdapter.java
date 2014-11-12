@@ -1,11 +1,13 @@
 package ies.iot.iotdemo2;
 
 import ies.iot.demolib.ble.BeaconScanInfo;
+import ies.iot.demolib.utils.DemoSettings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.util.Log;
@@ -142,16 +144,22 @@ public class ScanListAdapter extends BaseAdapter {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                 long arg3) {
             ViewHolder view_holder = (ViewHolder) arg1.getTag();
-            Log.d(TAG_, "args2: " + arg2);
-            Log.d(TAG_, "args3: " + arg3);
             BeaconScanInfo bsi = beacon_list_.get(arg2);
-            /**
-            Intent device_intent = 
-                    new Intent(context_, 
-                            com.ies.mysensortag.DeviceActivity.class);
-            device_intent.putExtra(DeviceActivity.BT_DEV_OBJ, bsi.get_device());
-            context_.startActivity(device_intent);
-            **/
+            if (!bsi.get_name().equalsIgnoreCase("sensortag")) {
+                new AlertDialog.Builder(context_)
+                    .setMessage("Not a Sensor Device")
+                    .setTitle("Error")
+                    .setCancelable(true)
+                    .show();
+                return;
+            }
+            DemoSettings.getInstance().setDeviceName(context_,
+                    bsi.get_name());
+            DemoSettings.getInstance().setDeviceAddress(context_, 
+                    bsi.get_address());
+            Intent intent = new Intent(context_, DashboardActivity.class);
+            context_.startActivity(intent);
+            context_.finish();
         }
     };
     

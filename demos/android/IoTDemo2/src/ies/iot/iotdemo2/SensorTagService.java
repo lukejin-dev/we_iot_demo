@@ -16,7 +16,9 @@ public class SensorTagService extends Service {
     private BleManager mBleManager;
     private final IBinder mServiceBinder = new  SensorTagServiceBinder();
     private NotificationCompat.Builder mNotificationBuilder;
-   
+    private UIConnectCallback mUIConnectCallback;
+
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -43,6 +45,7 @@ public class SensorTagService extends Service {
             mBleManager.stopScan();
         }
         
+        unregisterConnectCallback();
         return true;
     }
     
@@ -73,7 +76,7 @@ public class SensorTagService extends Service {
     private Handler mStateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            int state = msg.arg1;
+            int state = msg.what;
             if (state == BleManager.STATE_SCANNING) {
                 setNotification("BLE scanning");
             } else if (state == BleManager.STATE_DISCONNECTED) {
@@ -86,4 +89,23 @@ public class SensorTagService extends Service {
         }
     };
     
+    public void registerConnectCallback(UIConnectCallback callback) {
+        mUIConnectCallback = callback;
+    }
+    
+    public void unregisterConnectCallback() {
+        mUIConnectCallback = null;
+    }
+    
+    public boolean startBle(String address) {
+        if (mBleManager.isConnected()) {
+            if (mUIConnectCallback != null) {
+                mUIConnectCallback.onConnected();
+                return true;
+            }
+        }
+        
+        return mBleManager.connectBle(address);
+    }
+   
 }

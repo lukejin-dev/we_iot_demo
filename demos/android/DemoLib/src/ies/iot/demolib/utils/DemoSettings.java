@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class DemoSettings {
+    private final String TAG = getClass().getSimpleName();
+    
     private static DemoSettings mInstance;
     
     private final String SETTING_FILE = "IoTDemoSettings";
@@ -24,8 +27,11 @@ public class DemoSettings {
                 SETTING_FILE, Activity.MODE_MULTI_PROCESS);
         String temp = pref.getString(KEY_DEVICE_NAME, null);
         if (temp != null && temp.length() == 0) {
+            Log.v(TAG, "getDeviceName() : null");
             return null;
         }
+        
+        Log.v(TAG, "getDeviceName() : " + temp);
         return temp;
     }
     
@@ -34,6 +40,7 @@ public class DemoSettings {
         SharedPreferences.Editor editor = context.getSharedPreferences(
                 SETTING_FILE, Activity.MODE_MULTI_PROCESS).edit();
         editor.putString(KEY_DEVICE_NAME, temp);
+        editor.commit();
     }
 
     public String getDeviceAddress(Context context) {
@@ -42,8 +49,10 @@ public class DemoSettings {
         
         String temp = pref.getString(KEY_DEVICE_ADDRESS, null);
         if (temp != null && temp.length() == 0) {
+            Log.v(TAG, "getDeviceAddress() : null");
             return null;
         }
+        Log.v(TAG, "getDeviceAddress() : " + temp);
         return temp;
     }
     
@@ -53,6 +62,7 @@ public class DemoSettings {
         SharedPreferences.Editor editor = context.getSharedPreferences(
                 SETTING_FILE, Activity.MODE_MULTI_PROCESS).edit();
         editor.putString(KEY_DEVICE_ADDRESS, temp);
+        editor.commit();
     }
     
 }

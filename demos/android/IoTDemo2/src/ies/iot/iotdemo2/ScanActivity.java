@@ -34,6 +34,9 @@ public class ScanActivity extends Activity {
         mListScan = (ListView)findViewById(R.id.lv_scan);
         mListScanAdapter = new ScanListAdapter(this);
         mListScan.setAdapter(mListScanAdapter);
+        mListScan.setOnItemClickListener(
+                mListScanAdapter.get_item_click_listener());
+        
         connectService();
         
         mDisappearCheckHandler = new Handler();
