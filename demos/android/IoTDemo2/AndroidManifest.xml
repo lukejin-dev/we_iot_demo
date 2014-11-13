@@ -31,7 +31,7 @@
         </activity>
         <activity android:name=".ScanActivity">
         </activity>
-        <service android:name=".SensorTagService">
+        <service android:enabled="true" android:name=".SensorTagService">
         </service>
     </application>
 

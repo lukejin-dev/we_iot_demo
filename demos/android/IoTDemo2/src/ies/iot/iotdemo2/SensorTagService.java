@@ -18,7 +18,7 @@ public class SensorTagService extends Service {
     private final IBinder mServiceBinder = new  SensorTagServiceBinder();
     private NotificationCompat.Builder mNotificationBuilder;
     private UIConnectCallback mUIConnectCallback;
-
+    private int NOTIFICATION_ID = 222;
     
     @Override
     public void onCreate() {
@@ -42,6 +42,16 @@ public class SensorTagService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mServiceBinder;
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestory");
+        NotificationManager notificationManager = 
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
+        stopBle();
     }
     
     @Override
@@ -76,7 +86,8 @@ public class SensorTagService extends Service {
         mNotificationBuilder.setContentText(message);
         NotificationManager notificationManager = 
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, mNotificationBuilder.build());        
+        notificationManager.notify(NOTIFICATION_ID, 
+                mNotificationBuilder.build());        
     }
 
     private Handler mStateHandler = new Handler() {
@@ -87,12 +98,22 @@ public class SensorTagService extends Service {
                 setNotification("BLE scanning");
             } else if (state == BleManager.STATE_DISCONNECTED) {
                 setNotification("BLE disconnected");
+                if (mUIConnectCallback != null) {
+                    mUIConnectCallback.onDisconnected();
+                }
             } else if (state == BleManager.STATE_CONNECTING) {
                 setNotification("BLE connecting");
             } else if (state == BleManager.STATE_CONNECTED) {
                 mBleManager.discoveryService();
-            } else if (state == BleManager.STATE_DISCOVERIED) {
+                if (mUIConnectCallback != null) {
+                    mUIConnectCallback.onConnected();
+                }
                 setNotification("BLE connected");
+            } else if (state == BleManager.STATE_DISCOVERIED) {
+                if (mUIConnectCallback != null) {
+                    mUIConnectCallback.onServiceDiscoveried();
+                }                
+                setNotification("BLE connected and discoveried");
             }
         }
     };

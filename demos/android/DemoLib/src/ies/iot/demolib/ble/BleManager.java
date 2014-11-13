@@ -150,8 +150,6 @@ public class BleManager {
     public void disconnectBle() {
         Log.v(TAG, "disconnectBle");
         mBleGatt.disconnect();
-        mDeviceAddress = null;
-        mBleDevice = null;
         mBleGatt = null;
     }
     

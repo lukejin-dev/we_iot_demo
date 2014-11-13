@@ -1,5 +1,6 @@
 package ies.iot.iotdemo2;
 
+import ies.iot.demolib.ble.UIConnectCallback;
 import ies.iot.demolib.utils.DemoSettings;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -10,6 +11,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -54,12 +57,6 @@ public class DashboardActivity extends Activity {
         disconnectService();
     }
     
-    public void onButtonStopClicked(View view) {
-        Log.v(TAG, "onButtonClickStop");
-        mService.stopBle();
-        backToScan();
-    }
-    
     public void backToScan() {
         Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
@@ -73,6 +70,7 @@ public class DashboardActivity extends Activity {
     }
     
     public void disconnectService() {
+        mService.unregisterConnectCallback();
         unbindService(mConnection);
     }   
     
@@ -86,6 +84,7 @@ public class DashboardActivity extends Activity {
             SensorTagService.SensorTagServiceBinder b = 
                     (SensorTagService.SensorTagServiceBinder)binder;
             mService = b.getService();
+            mService.registerConnectCallback(mConnectCallback);
             mService.startBle(mDeviceAddress);
         }
 
@@ -96,5 +95,31 @@ public class DashboardActivity extends Activity {
                     Toast.LENGTH_SHORT).show();            
         }
         
-    };    
+    };  
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.mi_rescan) {
+            if (mService != null) {
+                mService.stopBle();
+            }
+            backToScan();
+        }
+        return super.onOptionsItemSelected(item);
+    }    
+    
+    private UIConnectCallback mConnectCallback = new UIConnectCallback() {
+        
+    };
 }
