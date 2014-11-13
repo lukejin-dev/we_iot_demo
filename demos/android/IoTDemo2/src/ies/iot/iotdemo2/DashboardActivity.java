@@ -63,6 +63,9 @@ public class DashboardActivity extends Activity {
                 PreferenceManager.getDefaultSharedPreferences(mContext); 
         DemoSettings.getInstance().setServerUrl(this, 
                 setting_preference.getString("report_server_url", ""));
+        String interval = setting_preference.getString("updates_interval", "1000");
+        DemoSettings.getInstance().setReportInterval(this, interval);
+        Log.v(TAG, "interval: " + interval);
         connectService();
     }
     

@@ -47,6 +47,7 @@ public class ServerReporter {
     private String mac_;
     private List<SensorValues> value_list_;
     private int server_errors_;
+    private int report_interval_;
     private static final Object itemLock = new Object();
     
     public ServerReporter() {
@@ -54,19 +55,13 @@ public class ServerReporter {
     }
     
     public ServerReporter(String url) {
-        /**
-        if (url == null || url.length() == 0) {
-            server_address_ = DEFAULT_SERVER_ADDRESS;
-        } else {
-            server_address_ = url;
-        }
-        **/
         server_address_ = url;
         is_transferring_ = false;
         last_report_time_ = new Date();   
         post_data_ = null;
         server_errors_ = 0;
         value_list_ = new ArrayList<SensorValues>();
+        report_interval_ = 1000;
     }
     
     private URL get_url() {
@@ -92,8 +87,8 @@ public class ServerReporter {
                 "  data - " + data);
        
         HttpParams params = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(params, 1000);
-        HttpConnectionParams.setSoTimeout(params, 1000);            
+        HttpConnectionParams.setConnectionTimeout(params, 2000);
+        HttpConnectionParams.setSoTimeout(params, 2000);            
         HttpClient httpclient = new DefaultHttpClient(params);
         
         try {
@@ -143,8 +138,12 @@ public class ServerReporter {
         return server_errors_;
     }
     
+    public void set_report_interval(int interval) {
+        Log.v(TAG_, "report interval: " + interval);
+        report_interval_ = interval;
+    }
+    
     public void report_sensor_data(TiSensor sensor, String mac, String id) {
-        Log.v(TAG_, "server address: " + server_address_);
         if (server_address_ == null) {
             return;
         }
@@ -199,7 +198,7 @@ public class ServerReporter {
         long diff_seconds = 
                 (now.getTime() - last_report_time_.getTime());
         //Log.v(TAG_, "diff seconds: " + diff_seconds);
-        if (diff_seconds < 1000) {
+        if (diff_seconds < report_interval_) {
             //Log.w(TAG_, "too fast");
             return true;
         }

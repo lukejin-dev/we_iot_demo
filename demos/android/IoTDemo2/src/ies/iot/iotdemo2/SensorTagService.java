@@ -39,7 +39,6 @@ public class SensorTagService extends Service {
         
         mReporter = new ServerReporter(DemoSettings.getInstance().
                 getServerUrl(this));
-        
         String address = DemoSettings.getInstance().getDeviceAddress(this);
         if (address != null) {
             startBle(address);
@@ -146,6 +145,9 @@ public class SensorTagService extends Service {
         mDeviceAddress = address;
         mReporter.set_server_address(DemoSettings.getInstance().
                 getServerUrl(this));
+        mReporter.set_report_interval(
+                Integer.parseInt(DemoSettings.getInstance().getReportInterval(this)));
+        
         if (mBleManager.isConnected()) {
             if (mUIConnectCallback != null) {
                 mUIConnectCallback.onConnected();

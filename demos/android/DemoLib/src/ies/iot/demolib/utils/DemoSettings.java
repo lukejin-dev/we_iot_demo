@@ -15,6 +15,7 @@ public class DemoSettings {
     private final String KEY_DEVICE_NAME = "BleDeviceName";
     private final String KEY_DEVICE_ADDRESS = "BleDeviceAddress";
     private final String KEY_SERVER_URL = "report_server_url";
+    private final String KEY_REPORT_INTERVAL = "ReportInterval";
     
     public static DemoSettings getInstance() {
         if (mInstance == null) {
@@ -87,4 +88,26 @@ public class DemoSettings {
         editor.putString(KEY_SERVER_URL, temp);
         editor.commit();
     }    
+
+    public String getReportInterval(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(
+                SETTING_FILE, Activity.MODE_MULTI_PROCESS);
+        
+        String temp = pref.getString(KEY_REPORT_INTERVAL, null);
+        if (temp != null && temp.length() == 0) {
+            Log.v(TAG, "getReportInterval() : null");
+            return null;
+        }
+        Log.v(TAG, "getReportInterval() : " + temp);
+        return temp;        
+    }
+    
+    public void setReportInterval(Context context, String interval) {
+        String temp = (interval == null) ? "" : interval;
+        
+        SharedPreferences.Editor editor = context.getSharedPreferences(
+                SETTING_FILE, Activity.MODE_MULTI_PROCESS).edit();
+        editor.putString(KEY_REPORT_INTERVAL, temp);
+        editor.commit();
+    }     
 }
