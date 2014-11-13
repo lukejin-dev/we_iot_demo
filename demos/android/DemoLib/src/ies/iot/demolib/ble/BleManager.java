@@ -1,12 +1,19 @@
 package ies.iot.demolib.ble;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ies.iot.demolib.sensors.BleSensor;
+import ies.iot.demolib.sensors.SensorDb;
 import ies.iot.demolib.utils.BleUtil;
+import ies.iot.demolib.utils.ServerReporter;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
@@ -22,6 +29,7 @@ public class BleManager {
     public static final int STATE_CONNECTING = 3;
     public static final int STATE_CONNECTED = 4;
     public static final int STATE_DISCOVERIED = 5;
+    public static final int UPDATE_SENSOR_VALUE = 6;
     
     private Context mContext;
     private BluetoothAdapter mBleAdapter;
@@ -32,6 +40,7 @@ public class BleManager {
     private BluetoothGatt mBleGatt;
     private int mState;
     private String mDeviceAddress;
+    private List<BleSensor> mSensorList = new ArrayList<BleSensor>();
     
     public BleManager(Context context, Handler stateHandler) {
         mContext = context;
@@ -155,11 +164,19 @@ public class BleManager {
     
     public void discoveryService() {
         Log.v(TAG, "discoveryService");
-        mBleGatt.discoverServices();
+        if (mBleGatt != null) {
+            mBleGatt.discoverServices();
+        } else {
+            Log.e(TAG, "Fail to discovery service, since GATT gone.");
+        }
     }
     
     public boolean isConnected() {
         return mState == STATE_CONNECTED;
+    }
+    
+    public boolean isConnecting() {
+        return mState == STATE_CONNECTING;
     }
     
     private BluetoothGattCallback mBleGattCallback = 
@@ -204,6 +221,15 @@ public class BleManager {
                 BluetoothGattCharacteristic characteristic,
                 int status) {
             Log.i(TAG, "onCharacteristicRead, status: " + status);
+            
+            
+            String service_id = characteristic.getService().getUuid().toString();
+            String char_id = characteristic.getUuid().toString();
+            
+            BleSensor sensor = getSensor(service_id);
+            if (sensor != null) {
+                sensor.onCharacteristicRead(characteristic);
+            }                        
         }
         
         @Override
@@ -214,6 +240,16 @@ public class BleManager {
             
             String service_id = characteristic.getService().getUuid().toString();
             String char_id = characteristic.getUuid().toString();
+            
+            BleSensor sensor = getSensor(service_id);
+            if (sensor != null) {
+                sensor.onCharacteristicChanged(characteristic);
+                
+                Message msg = new Message();
+                msg.what = UPDATE_SENSOR_VALUE;
+                msg.obj = sensor;
+                mStateHandler.sendMessage(msg);
+            }
         }
         
         @Override
@@ -226,6 +262,7 @@ public class BleManager {
         public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
                 int status) {
             Log.i(TAG, "onDescriptorRead: " + status);
+
         }
         
         @Override
@@ -239,4 +276,38 @@ public class BleManager {
             Log.i(TAG, "onReliableWriteCompleted: " + status);
         }        
     };
+    
+    private BleSensor getSensor(String serviceId) {
+        for (BleSensor s:mSensorList) {
+            if (s.get_service_uuid().equalsIgnoreCase(serviceId)) {
+                return s;
+            }
+        }
+        return null;        
+    }
+    
+    public void updateSensorList() {
+        if (mBleGatt == null) return;
+        
+        for (BluetoothGattService service:mBleGatt.getServices()) {
+            BleSensor s = 
+                    SensorDb.get(service.getUuid().toString().toLowerCase());
+            if (s != null) {
+                if (!mSensorList.contains(s)) {
+                    Log.v(TAG, "Add new sensor " + s.get_name());
+                    mSensorList.add(s);
+                }
+                s.enable(mBleGatt, true);
+                try {
+                    Thread.sleep(200);
+                } catch (Exception e) {
+                    
+                }
+            }
+        }        
+    }
+    
+    public List<BleSensor> getSensorList() {
+        return mSensorList;
+    }
 }

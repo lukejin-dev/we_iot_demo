@@ -8,4 +8,9 @@
         android:showAsAction="never"
         android:title="Rescan for new device"/>
     
+    <item
+        android:id="@+id/mi_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Settings"/>    
 </menu>

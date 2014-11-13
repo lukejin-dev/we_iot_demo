@@ -14,6 +14,7 @@ public class DemoSettings {
     private final String SETTING_FILE = "IoTDemoSettings";
     private final String KEY_DEVICE_NAME = "BleDeviceName";
     private final String KEY_DEVICE_ADDRESS = "BleDeviceAddress";
+    private final String KEY_SERVER_URL = "report_server_url";
     
     public static DemoSettings getInstance() {
         if (mInstance == null) {
@@ -65,4 +66,25 @@ public class DemoSettings {
         editor.commit();
     }
     
+    public String getServerUrl(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(
+                SETTING_FILE, Activity.MODE_MULTI_PROCESS);
+        
+        String temp = pref.getString(KEY_SERVER_URL, null);
+        if (temp != null && temp.length() == 0) {
+            Log.v(TAG, "getServerUrl() : null");
+            return null;
+        }
+        Log.v(TAG, "getServerUrl() : " + temp);
+        return temp;        
+    }
+    
+    public void setServerUrl(Context context, String url) {
+        String temp = (url == null) ? "" : url;
+        
+        SharedPreferences.Editor editor = context.getSharedPreferences(
+                SETTING_FILE, Activity.MODE_MULTI_PROCESS).edit();
+        editor.putString(KEY_SERVER_URL, temp);
+        editor.commit();
+    }    
 }

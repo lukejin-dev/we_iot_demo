@@ -16,4 +16,8 @@ public abstract class UIConnectCallback {
     public void onServiceDiscoveried() {
         Log.v(TAG, "onServiceDiscovried");
     }
+    
+    public void onUpdateSensorValue() {
+        //Log.v(TAG, "onUpdateSensorValue");
+    }
 }

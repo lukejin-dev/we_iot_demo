@@ -10,7 +10,9 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import ies.iot.demolib.ble.*;
-import ies.iot.demolib.utils.DemoSettings;
+import ies.iot.demolib.sensors.BleSensor;
+import ies.iot.demolib.sensors.TiSensor;
+import ies.iot.demolib.utils.*;
 
 public class SensorTagService extends Service {
     private final String TAG = getClass().getSimpleName();
@@ -19,6 +21,8 @@ public class SensorTagService extends Service {
     private NotificationCompat.Builder mNotificationBuilder;
     private UIConnectCallback mUIConnectCallback;
     private int NOTIFICATION_ID = 222;
+    private ServerReporter mReporter;
+    private String mDeviceAddress;
     
     @Override
     public void onCreate() {
@@ -32,6 +36,9 @@ public class SensorTagService extends Service {
             .setOngoing(true);
         
         setNotification("Service is starting");
+        
+        mReporter = new ServerReporter(DemoSettings.getInstance().
+                getServerUrl(this));
         
         String address = DemoSettings.getInstance().getDeviceAddress(this);
         if (address != null) {
@@ -110,10 +117,19 @@ public class SensorTagService extends Service {
                 }
                 setNotification("BLE connected");
             } else if (state == BleManager.STATE_DISCOVERIED) {
+                mBleManager.updateSensorList();
                 if (mUIConnectCallback != null) {
                     mUIConnectCallback.onServiceDiscoveried();
                 }                
                 setNotification("BLE connected and discoveried");
+            } else if (state == BleManager.UPDATE_SENSOR_VALUE) {
+                if (mUIConnectCallback != null) {
+                    mUIConnectCallback.onUpdateSensorValue();
+                }
+                
+                TiSensor sensor = (TiSensor)msg.obj;
+                mReporter.report_sensor_data(sensor, mDeviceAddress, 
+                        sensor.get_service_uuid());
             }
         }
     };
@@ -127,6 +143,9 @@ public class SensorTagService extends Service {
     }
     
     public boolean startBle(String address) {
+        mDeviceAddress = address;
+        mReporter.set_server_address(DemoSettings.getInstance().
+                getServerUrl(this));
         if (mBleManager.isConnected()) {
             if (mUIConnectCallback != null) {
                 mUIConnectCallback.onConnected();
@@ -134,6 +153,9 @@ public class SensorTagService extends Service {
             }
         }
         
+        if (mBleManager.isConnecting()) {
+            return true;
+        }
         return mBleManager.connectBle(address);
     }
     
@@ -142,5 +164,8 @@ public class SensorTagService extends Service {
         DemoSettings.getInstance().setDeviceAddress(this, "");
         DemoSettings.getInstance().setDeviceName(this, "");
     }
-   
+    
+    public int getReportError() {
+        return mReporter.get_server_errors();
+    }
 }
