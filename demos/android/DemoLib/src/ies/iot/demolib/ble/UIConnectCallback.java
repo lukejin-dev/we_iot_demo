@@ -1,5 +1,6 @@
 package ies.iot.demolib.ble;
 
+import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 public abstract class UIConnectCallback {
@@ -19,5 +20,10 @@ public abstract class UIConnectCallback {
     
     public void onUpdateSensorValue() {
         //Log.v(TAG, "onUpdateSensorValue");
+    }
+    
+    public void onScanCallback(BluetoothDevice device, int rssi) {
+        Log.v(TAG, "onScanCallback: " + device.getName() + " " + 
+                device.getAddress() + " " + rssi);
     }
 }

@@ -30,6 +30,7 @@ public class BleManager {
     public static final int STATE_CONNECTED = 4;
     public static final int STATE_DISCOVERIED = 5;
     public static final int UPDATE_SENSOR_VALUE = 6;
+    public static final int CONTINUE_SCAN_REPORT = 7;
     
     private Context mContext;
     private BluetoothAdapter mBleAdapter;
@@ -97,6 +98,48 @@ public class BleManager {
         setState(STATE_SCANNING);
         
         return true;
+    }
+    
+    // for iot demo3
+    private BluetoothAdapter.LeScanCallback mConitnueScanCallback =
+            new BluetoothAdapter.LeScanCallback() {
+
+        @Override
+        public void onLeScan(final BluetoothDevice device, 
+                final int rssi, final byte[] scanRecord) {
+            Log.v(TAG, "Scan : " + device.getName() + " " + 
+                device.getAddress());
+            
+            Message msg = new Message();
+            msg.what = CONTINUE_SCAN_REPORT;
+            msg.obj = device;
+            msg.arg1 = rssi;
+            
+            mStateHandler.sendMessage(msg);
+        }
+    };   
+    
+    // for iot demo3
+    public boolean startContinueScan() {
+        Log.v(TAG, "startContinueScan");
+        if (!enableBle()) return false;
+        assert(mBleAdapter != null);
+        
+        mBleScanner = new BleScanner();
+        mBleScanner.startScan(mConitnueScanCallback, mBleAdapter);
+        setState(STATE_SCANNING);
+        
+        return true;
+    }
+    
+    public void stopContinueScan() {
+        Log.v(TAG, "stopScan");
+        if (mState != STATE_SCANNING) {
+            return;
+        }
+        
+        mBleScanner.stopLeScan(mConitnueScanCallback, mBleAdapter);
+        setState(STATE_DISCONNECTED);
     }
     
     public void stopScan() {
