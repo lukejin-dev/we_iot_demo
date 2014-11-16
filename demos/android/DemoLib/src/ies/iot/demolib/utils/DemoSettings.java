@@ -93,7 +93,7 @@ public class DemoSettings {
         SharedPreferences pref = context.getSharedPreferences(
                 SETTING_FILE, Activity.MODE_MULTI_PROCESS);
         
-        String temp = pref.getString(KEY_REPORT_INTERVAL, null);
+        String temp = pref.getString(KEY_REPORT_INTERVAL, "1000");
         if (temp != null && temp.length() == 0) {
             Log.v(TAG, "getReportInterval() : null");
             return null;

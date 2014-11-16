@@ -61,11 +61,16 @@ public class DashboardActivity extends Activity {
         
         SharedPreferences setting_preference = 
                 PreferenceManager.getDefaultSharedPreferences(mContext); 
-        DemoSettings.getInstance().setServerUrl(this, 
-                setting_preference.getString("report_server_url", ""));
-        String interval = setting_preference.getString("updates_interval", "1000");
+        String server_url = setting_preference.getString("report_server_url", 
+                "http://69.10.52.93:8300/api/p2/write");
+        DemoSettings.getInstance().setServerUrl(this, server_url);
+        String interval = setting_preference.getString("updates_interval", 
+                "1000");
         DemoSettings.getInstance().setReportInterval(this, interval);
+        
+        Log.v(TAG, "server url:" + server_url);
         Log.v(TAG, "interval: " + interval);
+        
         connectService();
     }
     
@@ -104,7 +109,7 @@ public class DashboardActivity extends Activity {
             mService = b.getService();
             
             mService.registerConnectCallback(mConnectCallback);
-            mService.startBle(mDeviceAddress);
+            mService.startBle();
         }
 
         @Override

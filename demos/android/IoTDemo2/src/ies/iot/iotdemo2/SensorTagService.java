@@ -39,10 +39,7 @@ public class SensorTagService extends Service {
         
         mReporter = new ServerReporter(DemoSettings.getInstance().
                 getServerUrl(this));
-        String address = DemoSettings.getInstance().getDeviceAddress(this);
-        if (address != null) {
-            startBle(address);
-        }
+
     }
     
     @Override
@@ -81,6 +78,18 @@ public class SensorTagService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
        // Let it continue running until it is stopped.
        Log.v(TAG, "onStartCommand");
+       
+       mReporter.set_server_address(DemoSettings.getInstance().
+               getServerUrl(this));
+       mReporter.set_report_interval(
+               Integer.parseInt(DemoSettings.getInstance().
+                       getReportInterval(this)));
+
+       
+       if (!startBle()) {
+           setNotification("Fail to start BLE");
+       }
+      
        return START_STICKY;
     }
     
@@ -141,24 +150,27 @@ public class SensorTagService extends Service {
         mUIConnectCallback = null;
     }
     
-    public boolean startBle(String address) {
-        mDeviceAddress = address;
-        mReporter.set_server_address(DemoSettings.getInstance().
-                getServerUrl(this));
-        mReporter.set_report_interval(
-                Integer.parseInt(DemoSettings.getInstance().getReportInterval(this)));
+    public boolean startBle() {
+        Log.v(TAG, "startBle: current state:" + mBleManager.getState());
+        mDeviceAddress = DemoSettings.getInstance().getDeviceAddress(this);
+        if (mDeviceAddress == null) {
+            return false;
+        }
         
         if (mBleManager.isConnected()) {
+            Log.v(TAG, "already connected!");
             if (mUIConnectCallback != null) {
                 mUIConnectCallback.onConnected();
-                return true;
             }
+            return true;
         }
         
         if (mBleManager.isConnecting()) {
+            Log.v(TAG, "is connecting!");
             return true;
         }
-        return mBleManager.connectBle(address);
+        
+        return mBleManager.connectBle(mDeviceAddress);
     }
     
     public void stopBle() {
