@@ -3,16 +3,21 @@ package ies.iot.iotdemo3;
 import ies.iot.demolib.ble.BeaconScanInfo;
 import ies.iot.demolib.ble.UIConnectCallback;
 import ies.iot.demolib.utils.DemoSettings;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -39,24 +44,32 @@ public class ScanActivity extends Activity {
         mListScan.setOnItemClickListener(
                 mListScanAdapter.get_item_click_listener());
         
-        connectService();
-        DemoSettings.getInstance().setServerUrl3(this, 
+        SharedPreferences setting_preference = 
+                PreferenceManager.getDefaultSharedPreferences(mContext); 
+        String server_url = setting_preference.getString("report_server_url", 
                 "http://69.10.52.93:8400/api/p3/write");
+        DemoSettings.getInstance().setServerUrl3(this, server_url);
+        String interval = setting_preference.getString("updates_interval", 
+                "1000");
+        DemoSettings.getInstance().setReportInterval(this, interval);
+        
         mDisappearCheckHandler = new Handler();
         mDisappearCheckHandler.postDelayed(mDisappearCheckRunner, 1000);
+        
+        connectService();
     }
     
     @Override
     protected void onStop() {
         super.onStop();
         Log.v(TAG, "onStop");
-        disconnectService();
     }
     
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.v(TAG, "onDestroy");
+        disconnectService();
     }
     
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -117,4 +130,31 @@ public class ScanActivity extends Activity {
             mListScanAdapter.update_device(device, rssi);
         }        
     };
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.mi_stop) {
+            if (mService != null) {
+                mService.stopBle();
+            }
+            finish();
+        } else if (id == R.id.mi_settings) {
+            Intent intent = new Intent();
+            intent.setClass(this, SettingPreferenceActivity.class);
+            startActivity(intent);
+            return true;            
+        }
+        return super.onOptionsItemSelected(item);
+    }     
 }

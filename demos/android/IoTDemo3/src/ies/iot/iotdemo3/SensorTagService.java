@@ -127,6 +127,11 @@ public class SensorTagService extends Service {
         }
     };
     
+    
+    public void stopBle() {
+        mBleManager.stopContinueScan();
+    }
+    
     public void registerConnectCallback(UIConnectCallback callback) {
         mUIConnectCallback = callback;
     }

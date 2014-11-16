@@ -29,7 +29,8 @@
             </intent-filter>
         </activity>
         <service android:enabled="true" android:name=".SensorTagService">
-        </service>        
+        </service>
+        <activity android:name=".SettingPreferenceActivity"></activity>        
     </application>
 
 </manifest>

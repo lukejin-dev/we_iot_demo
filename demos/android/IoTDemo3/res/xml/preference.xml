@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <EditTextPreference
+        android:key="report_server_url"
+        android:title="Configure Server URL"
+        android:summary="Server URL for reporting sensor value"
+        android:defaultValue="http://69.10.52.93:8400/api/p3/write"
+        android:persistent="true"
+        >
+    </EditTextPreference>
+    
+    <ListPreference
+            android:key="updates_interval"
+            android:title="Updates interval"
+            android:summary="Define how often sensor values will be reported"
+            android:defaultValue="1000"
+            android:entries="@array/updateInterval"
+            android:entryValues="@array/updateIntervalValues"
+            android:persistent="true"
+        />   
+    
+</PreferenceScreen>
