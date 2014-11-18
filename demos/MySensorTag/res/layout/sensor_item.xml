@@ -68,5 +68,11 @@
             android:text="N/A" />
 
     </RelativeLayout>
-
+    <LinearLayout 
+        android:id="@+id/ll_chart"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
 </LinearLayout>
