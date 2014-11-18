@@ -3,7 +3,6 @@ package ies.iot.iotdemo3;
 import ies.iot.demolib.ble.BeaconScanInfo;
 import ies.iot.demolib.ble.UIConnectCallback;
 import ies.iot.demolib.utils.DemoSettings;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -20,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.bluetooth.BluetoothDevice;
 
@@ -30,6 +30,7 @@ public class ScanActivity extends Activity {
     private ListView mListScan;
     private ScanListAdapter mListScanAdapter;
     private Handler mDisappearCheckHandler;
+    private TextView mTextViewStatus;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class ScanActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
         mContext = this;
+        mTextViewStatus = (TextView)findViewById(R.id.tv_status);
         mListScan = (ListView)findViewById(R.id.lv_scan);
         mListScanAdapter = new ScanListAdapter(this);
         mListScan.setAdapter(mListScanAdapter);
@@ -113,6 +115,7 @@ public class ScanActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             mListScanAdapter.update_device((BluetoothDevice)msg.obj, msg.arg1);
+            
         }
     };
     
@@ -128,6 +131,7 @@ public class ScanActivity extends Activity {
         public void onScanCallback(BluetoothDevice device, int rssi) {
             super.onScanCallback(device, rssi);
             mListScanAdapter.update_device(device, rssi);
+            mTextViewStatus.setText("Server Errors:" + mService.getReportError());
         }        
     };
     
