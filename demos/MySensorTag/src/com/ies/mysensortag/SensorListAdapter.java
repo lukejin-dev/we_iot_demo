@@ -35,7 +35,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 public class SensorListAdapter extends BaseAdapter {
-
+    private String TAG = getClass().getSimpleName();
+    
     private List<BleSensor> sensor_list_;
     private Activity context_;
     private LayoutInflater inflator_;
@@ -70,7 +71,8 @@ public class SensorListAdapter extends BaseAdapter {
         
         BleSensor bs = sensor_list_.get(position);
         final String name = bs.get_name();
-        
+        Log.v(TAG, "getView: position=" + position + "sensor name:" + name
+                + " view=" + view);
         // General ListView optimization code.
         if (view == null) {
             view = inflator_.inflate(R.layout.sensor_item, null);
@@ -85,7 +87,6 @@ public class SensorListAdapter extends BaseAdapter {
                     (TextView)view.findViewById(R.id.textview_sensor_hex_value);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.ll_chart);
             layout.addView(createGraphicView(name, view_holder));
-            view.setTag(view_holder);
             view_holder.switch_.setOnCheckedChangeListener(
                     new OnCheckedChangeListener() {
 
@@ -99,6 +100,7 @@ public class SensorListAdapter extends BaseAdapter {
                                 bs.enable(gatt, isChecked);
                         }                        
                     });
+            view.setTag(view_holder);
         } else {
             view_holder = (ViewHolder) view.getTag();
         }
@@ -225,6 +227,7 @@ public class SensorListAdapter extends BaseAdapter {
     }
     
     public void add_sensor(BleSensor sensor) {
+        Log.v(TAG, "add sensor:" + sensor.get_name());
         sensor_list_.add(sensor);
         notifyDataSetChanged();
     }
