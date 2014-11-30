@@ -13,4 +13,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Settings"/>    
+        
+    <item
+        android:id="@+id/mi_quit"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Quit"/>    
+        
 </menu>

@@ -93,9 +93,18 @@ public class DashboardActivity extends Activity {
     }
     
     public void disconnectService() {
-        mService.unregisterConnectCallback();
-        unbindService(mConnection);
+        if (mService != null) {
+            mService.unregisterConnectCallback();
+            unbindService(mConnection);
+            mService = null;
+        } 
     }   
+    
+    public void stopService() {
+        disconnectService();
+        Intent intent = new Intent(this, SensorTagService.class);
+        stopService(intent);
+    }
     
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -118,7 +127,6 @@ public class DashboardActivity extends Activity {
             Toast.makeText(mContext, "Service disconnected", 
                     Toast.LENGTH_SHORT).show();            
         }
-        
     };  
     
     @Override
@@ -144,6 +152,9 @@ public class DashboardActivity extends Activity {
             intent.setClass(this, SettingPreferenceActivity.class);
             startActivity(intent);
             return true;            
+        } else if (id == R.id.mi_quit) {
+            stopService();
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }    
