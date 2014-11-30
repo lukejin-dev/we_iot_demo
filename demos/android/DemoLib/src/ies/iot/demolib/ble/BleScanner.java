@@ -33,6 +33,9 @@ public class BleScanner {
         if (Build.MODEL.equals("Nexus 7")) //&& Build.DISPLAY.equals("JSS15J"))
           scanType = SCAN_TYPE.ONE_OFF;
 
+        if (Build.MODEL.equals("Lenovo A320t"))
+            scanType = SCAN_TYPE.ONE_OFF;
+        
         return scanType;
     }
     

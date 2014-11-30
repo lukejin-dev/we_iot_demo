@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class BleScaner {
 
-    private final String TAG = getClass().getSimpleName();
+    private final static String TAG = BleScaner.class.getSimpleName();
     private ScheduledFuture mHandle;
     private final ScheduledExecutorService scheduler = 
             Executors.newScheduledThreadPool(1);
@@ -33,6 +33,9 @@ public class BleScaner {
         if (Build.MODEL.equals("Nexus 7")) //&& Build.DISPLAY.equals("JSS15J"))
           scanType = SCAN_TYPE.ONE_OFF;
 
+        if (Build.MODEL.equals("Lenovo A320t"))
+            scanType = SCAN_TYPE.ONE_OFF;
+        
         return scanType;
     }
     
@@ -54,6 +57,7 @@ public class BleScaner {
                         mIsFirstRun = false;
                         bluetoothAdapter.startLeScan(callback); 
                     } else {
+                        Log.v(TAG, "restart scan!");
                         bluetoothAdapter.stopLeScan(callback);
                         bluetoothAdapter.startLeScan(callback);
                     }

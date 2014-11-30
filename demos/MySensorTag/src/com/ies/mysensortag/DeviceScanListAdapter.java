@@ -101,13 +101,16 @@ public class DeviceScanListAdapter extends BaseAdapter {
             beacon_list_.add(bsi);
         }
         
+        Log.v(TAG_, "1");
         bsi.is_expired();
         
         //
         // Only update the RSSI value for existing beacon device.
         //
         bsi.set_rssi(rssi);
+        Log.v(TAG_, "2");
         notifyDataSetChanged();
+        Log.v(TAG_, "3");
     }
     
     public void refresh_disappeared_device() {
