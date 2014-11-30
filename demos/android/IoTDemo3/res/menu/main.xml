@@ -6,7 +6,7 @@
         android:id="@+id/mi_stop"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Stop"/>
+        android:title="Quit"/>
     
     <item
         android:id="@+id/mi_settings"

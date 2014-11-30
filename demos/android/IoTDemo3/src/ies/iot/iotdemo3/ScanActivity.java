@@ -104,7 +104,16 @@ public class ScanActivity extends Activity {
     
     
     public void disconnectService() {
-        unbindService(mConnection);
+        if (mService != null) {
+            unbindService(mConnection);
+            mService = null;
+        }
+    }
+    
+    public void stopService() {
+        disconnectService();
+        Intent intent = new Intent(this, SensorTagService.class);
+        stopService(intent);
     }
     
     public SensorTagService getService() {
@@ -149,9 +158,7 @@ public class ScanActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.mi_stop) {
-            if (mService != null) {
-                mService.stopBle();
-            }
+            stopService();
             finish();
         } else if (id == R.id.mi_settings) {
             Intent intent = new Intent();

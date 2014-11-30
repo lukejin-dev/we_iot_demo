@@ -26,6 +26,7 @@ public class SensorTagService extends Service {
     private ServerReporter3 mReporter;
     private String mDeviceAddress;
     private int interval = 1000;
+    private boolean doesShowNotification = true;
     
     @Override
     public void onCreate() {
@@ -59,11 +60,13 @@ public class SensorTagService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.v(TAG, "onDestory");
+        doesShowNotification = false;
+        
+        mBleManager.stopContinueScan();
+        
         NotificationManager notificationManager = 
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFICATION_ID);
-        
-        mBleManager.stopContinueScan();
     }
     
     @Override
@@ -100,11 +103,13 @@ public class SensorTagService extends Service {
     }
     
     public void setNotification(String message) {
-        mNotificationBuilder.setContentText(message);
-        NotificationManager notificationManager = 
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, 
-                mNotificationBuilder.build());        
+        if (doesShowNotification) {
+            mNotificationBuilder.setContentText(message);
+            NotificationManager notificationManager = 
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID, 
+                    mNotificationBuilder.build());
+        }
     }
 
     private Handler mStateHandler = new Handler() {

@@ -40,7 +40,6 @@ public class SensorTagService extends Service {
         
         mReporter = new ServerReporter(DemoSettings.getInstance().
                 getServerUrl(this));
-
     }
     
     @Override
