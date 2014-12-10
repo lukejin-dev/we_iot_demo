@@ -201,8 +201,10 @@ public class BleManager {
     
     public void disconnectBle() {
         Log.v(TAG, "disconnectBle");
-        mBleGatt.disconnect();
-        mBleGatt = null;
+        if (mBleGatt != null) {
+            mBleGatt.disconnect();
+            mBleGatt = null;
+        }
     }
     
     public void discoveryService() {

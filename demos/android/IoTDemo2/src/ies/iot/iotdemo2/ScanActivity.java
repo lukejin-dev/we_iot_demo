@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -85,8 +87,17 @@ public class ScanActivity extends Activity {
     }
     
     public void disconnectService() {
-        mService.getBleManager().stopScan();
-        unbindService(mConnection);
+        if (mService != null) {
+            mService.getBleManager().stopScan();
+            unbindService(mConnection);
+            mService = null;
+        }
+    }
+    
+    public void stopService() {
+        disconnectService();
+        Intent intent = new Intent(this, SensorTagService.class);
+        stopService(intent);
     }
     
     public SensorTagService getService() {
@@ -108,4 +119,29 @@ public class ScanActivity extends Activity {
         }
         
     };
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.mi_settings) {
+            Intent intent = new Intent();
+            intent.setClass(this, SettingPreferenceActivity.class);
+            startActivity(intent);
+            return true;            
+        } else if (id == R.id.mi_quit) {
+            stopService();
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }        
 }
