@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">        
+        <title>Realtime Sensor Data Monitor</title>
+        <link href="libs/css/bootstrap.min.css" rel="stylesheet"> 
+        <!--<link href="css/app.css" rel="stylesheet">-->
+        <style type="text/css">
+        body
+        {
+            background:url("img/bg.jpg");   
+            background-attachment:fixed;
+            background-position:center;            
+        }
+            .chart-div{
+            width: 80%;
+            margin: 120px;
+            margin-right: auto;
+            margin-right: auto;
+           }
+           #page-container
+           {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            background:#eee; 
+            box-shadow: 0px 0px 15px #111; 
+           }
+           .chart-frame{
+              margin: 4em 5em;
+              box-shadow: 3px 3px 15px #333;    
+           }
+           #page-heading{
+              color: #000;
+              text-shadow:0px 0px 10px #AAA;
+              margin: 5em 5em;
+              background:url('img/hd.jpg');
+              box-shadow: 3px 3px 15px #333;
+           }
+           #record-div{
+            position: fixed;
+            left: 0.5em;
+            top: 1em;
+            font-size: 40px;
+            color: white;
+            text-shadow: 0px 1px 10px #000;
+            z-index: 1000;    
+         }
+         #hidden-link{
+           color: #000;
+           text-decoration: none;
+         }
+          #hidden-link:hover{
+           color: #000;
+           text-decoration: none;
+         }
+          #hidden-link:visited {
+           color: #000;
+           text-decoration: none;
+         }
+        </style>  
+     </head>
+      <body>
+        <div id="record-div" style="display:none">REC</div>
+         <div class="container" id="page-container">
+          
+            <div class="jumbotron" id="page-heading">
+              <h1>PROTOTYPE 2</h1>
+              <h2>Realtime Sensor Data Monitor</h2>                  
+            </div>
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Control Panel</div>
+              <div class="panel-body"> 
+              <div class="form-horizontal" style="margin:1em 3em;"> 
+              <fieldset id="control-field-set">           
+
+               <div class="form-group"> 
+                  <label class="col-sm-2 control-label">Mode:</label>
+                  <div class="col-sm-10">                    
+                        <label class="checkbox-inline">
+                          <input type="radio" name="modeOptions" id="realtime-radio" checked onclick="$('#replay-ctrs').hide();$('#clip-ctrs').hide()"> Realtime Data
+                        </label>                    
+                       
+                        <label class="checkbox-inline">
+                          <input type="radio" name="modeOptions" id="history-radio" onclick="$('#replay-ctrs').show();$('#clip-ctrs').hide();getTimeListAndShow();"> History Replay
+                        </label>   
+                        <label class="checkbox-inline">
+                          <input type="radio" name="modeOptions" id="clip-radio" onclick="$('#clip-ctrs').show();$('#replay-ctrs').hide();getClipList();"> Clip Replay
+                        </label>                   
+                  </div>
+             </div> 
+             <div class="form-group">
+                  <label class="col-sm-2 control-label">Client:</label>
+                  <div class="col-sm-10">
+                         <select class="form-control" id="client-select" onchange="clientSelectChange();">                        
+                        </select>
+                  </div>
+               </div>
+             <div id="replay-ctrs" style="display:none">
+               <div class="form-group"> 
+                  <label class="col-sm-2 control-label">Active Time List:</label>
+                  <div class="col-sm-10" style="max-height:15em;overflow:auto">
+                    <ul class="list-group" id="time-list-ul">                      
+                    </ul>
+                  </div>
+
+              </div>
+               <div class="form-group"> 
+                  <label class="col-sm-2 control-label">Start Time(local):</label>
+                  <div class="col-sm-10">                    
+                        <input type="text" class="form-control" id="start-time-input" placeholder=" e.g. 2014-12-31 18:30:00" value="2014-11-06 18:30:00">               
+                  </div>                  
+              </div> 
+              <div class="form-group"> 
+                  <label class="col-sm-2 control-label">Length(min):</label>
+                  <div class="col-sm-10">                    
+                        <input type="text" class="form-control" id="clip-length-input" placeholder="1~10" value="3">       
+                  </div>                  
+              </div> 
+            </div>   
+            <div class="form-group" id="clip-ctrs" style="display:none">
+                  <label class="col-sm-2 control-label">Clip:</label>
+                  <div class="col-sm-10">
+                         <select class="form-control" id="clip-select">                        
+                        </select>
+                  </div>
+             </div>  
+            </fieldset>
+             <button style="width:6em;margin-left:17%;" class="btn" id="control-ok-button" onclick="okButtonHander()">..</button>
+
+         </div>
+      </div>
+  </div> 
+   <div class="panel panel-default chart-frame" id="replay-status-panel" style="display:none">
+              <div class="panel-heading">Replay Status</div>
+              <div class="panel-body">
+               <p><b>Progress:</b></p>
+              <div class="progress">
+                  <div id="replay-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ><span id="replay-progress-text">0%</span>
+                 </div>
+              </div>
+              <p><b>Current Time: </b><span id="replay-current-time"></span></p>
+              </div>
+   </div> 
+
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Current</div>
+              <div class="panel-body" style="padding:3em 0">
+              <div style="width:30%;text-align:center;float:left"><span style="font-wight:bold;font-size:2em;">Humidity</span><br><span id="tar_1" style="font-wight:bold;font-size:6em;">0</span></div>
+              <div style="width:35%;text-align:center;float:left"><span style="font-wight:bold;font-size:2em;">Target Temperature</span><br><span id="tar_2" style="font-wight:bold;font-size:6em;">0</span></div>
+              <div style="width:34%;text-align:center;float:left"><span style="font-wight:bold;font-size:2em;">Ambient Temperature</span><br><span id="tar_3" style="font-wight:bold;font-size:6em;">0</span></div>
+             
+              </div>
+            </div> 
+
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Humidity</div>
+              <div class="panel-body">
+              <div id="humidity-div"></div>
+              </div>
+            </div> 
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Temperature</div>
+              <div class="panel-body">
+              <div id="temperature-div"></div>
+              </div>
+            </div> 
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Accelerator</div>
+              <div class="panel-body">
+              <div id="accelerator-div"></div>
+              </div>
+            </div> 
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Magnetometer</div>
+              <div class="panel-body">
+              <div id="magnetometer-div"></div>
+              </div>
+            </div> 
+           
+         </div>
+        
+       <!--  <script src="libs/js/angular/angular.min.js"></script> -->
+       <!--  <script src="libs/js/angular/angular-route.min.js"></script>  -->
+        <script src="libs/js/jquery-2.1.1.min.js"></script>
+        <script src="libs/js/highcharts.js"></script> 
+       <!-- <script src="libs/js/bootstrap.min.js"></script> --> 
+        <script src="index.js"></script> 
+        <!-- <script src="libs/js/highcharts-ng.js"></script>-->
+        <!-- <script src="app.js"></script>-->
+        <!-- <script src="controllers.js"></script>-->       
+    </body>
+</html>
+

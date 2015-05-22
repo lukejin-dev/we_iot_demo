@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">        
+        <title>实时动作监测</title>
+        <link href="libs/css/bootstrap.min.css" rel="stylesheet"> 
+        <!--<link href="css/app.css" rel="stylesheet">-->
+        <style type="text/css">
+        body
+        {
+            font-family: "Microsoft YaHei";
+
+            background:url("img/bg.jpg");   
+            background-attachment:fixed;
+            background-position:center;            
+        }
+            .chart-div{
+            width: 80%;
+            margin: 120px;
+            margin-right: auto;
+            margin-right: auto;
+           }
+           #page-container
+           {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            background:#eee; 
+            box-shadow: 0px 0px 15px #111; 
+           }
+           .chart-frame{
+              margin: 4em 5em;
+              box-shadow: 3px 3px 15px #333;    
+           }
+
+           @keyframes monitor-active-an
+            {
+            0%   {top:-3px;}
+            40%  {top:3px;}            
+            100% {top:-3px;}
+            }
+
+            @-moz-keyframes monitor-active-an /* Firefox */
+            {
+            0%   {top:-3px;}
+            40%  {top:3px;}    
+            100% {top:-3px;}
+            }
+            @-webkit-keyframes monitor-active-an /* Safari 和 Chrome */
+            {
+            0%   {top:-3px;}
+            40%  {top:3px;}    
+            100% {top:-3px;}
+            }
+           .monitor-item-div{
+              color: black;
+              position: relative;
+              display: inline-block;
+              background:url("img/icon_n.png") no-repeat top;
+              width: 128px;
+              height: 160px;
+              margin: 2em 2em;
+           }
+           .monitor-item-div>span{
+            width: 128px;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            top:130px;
+           }
+           .monitor-item-div-active{
+            background:url("img/icon.png") no-repeat top!important;
+            animation-name: monitor-active-an;
+            animation-duration: 0.3s;
+            animation-play-state: running;
+            animation-iteration-count: infinite;
+            /* Firefox: */
+            -moz-animation-name: monitor-active-an;
+            -moz-animation-iteration-count: infinite;
+            -moz-animation-duration: 0.3s;      
+            -moz-animation-play-state: running;
+            /* Safari 和 Chrome: */
+            -webkit-animation-name: monitor-active-an;
+            -webkit-animation-duration: 0.3s;
+            -webkit-animation-play-state: running;
+            -webkit-animation-iteration-count: infinite;
+            font-weight: bold;
+           }
+            #page-heading{
+              color: #222;
+              text-shadow:0px 0px 10px #AAA;
+              margin: 5em 5em;
+              background:url('img/hd2.jpg');
+              box-shadow: 3px 3px 15px #333;
+           }
+         #hidden-link{
+           color: #000;
+           text-decoration: none;
+         }
+          #hidden-link:hover{
+           color: #000;
+           text-decoration: none;
+         }
+          #hidden-link:visited {
+           color: #000;
+           text-decoration: none;
+         }
+        </style>  
+     </head>
+      <body>
+         <div class="container" id="page-container">
+           
+            <div class="jumbotron" id="page-heading">
+              <h1>原型 2</h1>
+              <h2>实时动作监测</h2>                  
+            </div>
+          
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">控制面板</div>
+              <div class="panel-body"> 
+              <div class="form-horizontal" style="margin:1em 3em;"> 
+                <fieldset id="control-field-set">         
+                 <div class="form-group">
+                  <label class="col-sm-2 control-label">选择设备:</label>
+                  <div class="col-sm-10" id="clients-select-div">
+
+                </div>
+             </div>  
+            </fieldset>         
+             <button style="width:6em;margin-left:17%;" class="btn" id="control-ok-button" onclick="okButtonHander()">..</button>
+                <div class="form-group" style="margin-top:3em"> 
+                  <label class="col-sm-2 control-label">阈值:</label>
+                  <div class="col-sm-5">                    
+                        <input type="text" class="form-control" id="threshold-input" value="1.85">       
+                  </div>  
+                  <button  style="width:6em;margin-left:2em;" class="btn btn-sm btn-info" id="control-ok-button" onclick="updateThreshold();">设置</button>              
+              </div> 
+
+               </div>
+          </div>
+       </div> 
+
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">加速度</div>
+              <div class="panel-body">
+              <div id="accelerator-div"></div>
+              </div>
+            </div> 
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">监测器</div>
+              <div class="panel-body">
+              <div id="monitor-div">
+                <p>还没有数据.</p>
+              </div>
+              </div>
+            </div> 
+           
+         </div>
+        <script src="libs/js/jquery-2.1.1.min.js"></script>
+        <script src="libs/js/highcharts.js"></script> 
+       <!-- <script src="libs/js/bootstrap.min.js"></script> --> 
+        <script src="accelerator.js"></script>
+    </body>
+</html>
+

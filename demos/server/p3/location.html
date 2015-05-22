@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">        
+        <title>Realtime Location Tracking</title>
+        <link href="libs/css/bootstrap.min.css" rel="stylesheet"> 
+        <style type="text/css">
+        body
+        {
+            background:url("img/bg.jpg");   
+            background-attachment:fixed;
+            background-position:center;            
+        }
+            .chart-div{
+            width: 80%;
+            margin: 120px;
+            margin-right: auto;
+            margin-right: auto;
+           }
+           #page-container
+           {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            background:#eee; 
+            box-shadow: 0px 0px 15px #111; 
+           }
+           .chart-frame{
+              margin: 4em 5em;
+              box-shadow: 3px 3px 15px #333;    
+           }
+           #page-heading{
+              color: #fff;
+              margin: 5em 5em;
+              background:url('img/hd.jpg');
+              background-position:center; 
+              box-shadow: 3px 3px 15px #333;
+              text-shadow: 0px 0px 10px #222;
+           }
+           .clientid-row{
+            font-weight: bold;
+           }
+          .chart-station{
+            overflow: auto;
+            padding: 35px 40px 45px 40px;
+            border:3px dotted #428BCA;
+            border-radius: 50%;
+            margin: 30px;
+            float: left;
+            background: url('./img/station.jpg') no-repeat center;
+            height: 400px;
+            width: 400px;          
+            font-size: 30px;
+            color: #222;
+            text-align: center;
+            text-shadow: 0px 0px 2px #333;
+           }
+           .chart-station>span{            
+            display: block;
+            font-weight: bold;
+           }
+           .chart-student{
+            overflow: hidden;
+            margin:10px 0;
+            float: left;
+            background: url('./img/chart_icon.png') no-repeat top center;
+            height: 90px;
+            width: 100px;
+            padding-top: 66px;
+            font-size: 14px;
+            text-align: center;
+            text-shadow: 0px 0px 2px #777;
+           }
+
+
+        </style>  
+     </head>
+      <body>
+ 
+         <div class="container" id="page-container">
+            
+            <div class="jumbotron" id="page-heading">
+              <h1>PROTOTYPE 3</h1>
+              <h2>Realtime Location Tracking</h2>                  
+            </div>
+       
+            <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Data</div>
+              <div class="panel-body"> 
+                <table class="table" id="main-data-table">
+                  <thead> 
+                    <tr><td><b>Client \ Station</b></td></tr>
+                </thead>
+                  <tbody></tbody>
+                </table>
+                <b><span id="main-table-last-update"></span></b>
+              
+              </div>
+          </div> 
+
+          <div class="panel panel-default chart-frame">
+              <div class="panel-heading">Chart</div>
+              <div class="panel-body" id="chart-container" style="overflow:auto">   
+             
+              </div>
+          </div> 
+              
+   </div>
+        <script src="libs/js/jquery-2.1.1.min.js"></script>
+        <script src="libs/js/highcharts.js"></script> 
+        <script src="location.js"></script> 
+    
+    </body>
+</html>
+
