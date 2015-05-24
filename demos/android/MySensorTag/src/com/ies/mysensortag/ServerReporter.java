@@ -39,7 +39,7 @@ public class ServerReporter {
             ServerReporter.class.getSimpleName();
     
     private final static String DEFAULT_SERVER_ADDRESS = 
-            "http://192.168.88.2:83/api/p2/write";
+            "http://192.168.88.1:84/p2_portal.php?action=write";
     
     private Date last_report_time_;
     private boolean is_transferring_;
