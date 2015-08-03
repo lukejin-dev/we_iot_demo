@@ -98,6 +98,8 @@ class CapLocApp(Daemon):
                 for index in range(0, numbers):
                     addr_str = self._packed_bdaddr_to_string(remain[offset + 2:offset + 8])     # ble addr
                     length = struct.unpack("B", remain[offset + 8 :offset + 9])[0]
+                    logging.info("ble advertising length=%d", length)
+                    self._process_payload(struct.unpack("%dB" % length, remain[offset + 9:offset + 9 + length]))
                     rssi = struct.unpack("B", remain[offset + 9 + length:offset + 9 + length + 1])[0]
                     offset = offset + 9 + length + 2
                     ret_dict[addr_str] = rssi
@@ -133,6 +135,21 @@ class CapLocApp(Daemon):
         self._hci_toggle_le_scan(0x00)
         self._dev_sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, self._old_filter)
 
+    def _process_payload (self, buffer):
+        if len(buffer) < 9:
+            return
+
+        if buffer[0:9] == (0x02, 0x01, 0x1a, 0x1a, 0xff, 0x4c, 0x00, 0x02, 0x15):  # Apple ibeacon prefix
+            # for apple ibeacon 
+            logging.info("Found Apple Ibeacon!")
+            logging.info("    UUID : " + "".join('%02x'%i for i in buffer[9:25]))
+            logging.info("    Major: " + " ".join("%02d" % i for i in buffer[25:27]))
+            logging.info("    Minor: " + " ".join("%02d" % i for i in buffer[27:29]))
+            #print str(buffer[9:25])
+            #print " ".join('%02x'%i for i in buffer[9:25])
+            #import uuid
+            #print uuid.UUID(bytes=''.join(buffer[9:25])
+            
     def terminate(self):
         self._is_terminate = True
         self._hci_disable_le_scan()
